@@ -38,7 +38,12 @@ nontargref_words = ('UNVERTRAUT', 'FREMD', 'UNBEKANNT', 'ANDERE', 'SONSTIGES', '
 key_pair = { 'always' : { 'nontarg': 'k', 'target' : 'l', 'descr' : 'K (linker Zeigefinger) und L (rechter Zeigefinger)' }}
 
 
-instruction_pair = { 'speed' : 'so SCHNELL wie möglich zu antworten und so wenig Zeit wie möglich bis zu der Reaktion auf die gezeigten Wörter verstreichen zu lassen', 'accuracy' : 'so GENAU wie möglich zu antworten und bei der Reaktion auf die gezeigten Wörter so wenig Fehler wie möglich zu machen'}
+instruction_pair = { 'speed' : 'Versuchen Sie, so SCHNELL wie möglich zu antworten und so wenig Zeit wie möglich bis zu der Reaktion auf die gezeigten Wörter verstreichen zu lassen. Achten Sie also auf Geschwindigkeit und drücken Sie die Antworttaste so schnell wie es Ihnen möglich ist.', 'accuracy' : 'Versuchen Sie, so GENAU wie möglich zu antworten und bei der Reaktion auf die gezeigten Wörter so wenig Fehler wie möglich zu machen. Achten Sie also auf Genauigkeit und darauf, dass Sie immer die korrekte Antworttaste drücken.', 'control' : ' '}
+
+instruction_reminder = { 'speed' : 'Achten Sie weiterhin auf Geschwindigkeit und antworten Sie so schnell wie es Ihnen möglich ist.', 'accuracy' : 'Achten Sie weiterhin auf Genauigkeit und drücken Sie stets die korrekte Antworttaste.', 'control' : ' '}
+
+instruction_change = {'speed': 'Im Gegensatz zu den vorherigen Blöcken:', 'accuracy' : 'Im Gegensatz zu den vorherigen Blöcken:', 'control' : ' '}
+
 
 if testing:
     escape_key = 'escape'
@@ -89,7 +94,6 @@ def ending():
       [practice_repeated['block1'],
       practice_repeated['block2'],
       practice_repeated['block3'],
-      practice_repeated['block6'],
       full_duration,
       dcit] ] ) +
       "\n")
@@ -140,47 +144,53 @@ def set_block_info():
 
     block_info.append( task_instructions('firstblock') + '\n\nUm weiterzugehen, drücken Sie die Leertaste.')
 
-    block_info.append('Nun, in dieser zweiten Übungsrunde wollen wir herausfinden, ob Sie die Aufgabe genau verstanden haben. Um sicherzustellen, dass Sie Ihre jeweiligen Antworten richtig kategorisieren, werden Sie für diese Aufgabe genügend Zeit haben. Sie müssen auf jedes Item korrekt antworten. Wählen Sie eine nicht korrekte Antwort (oder geben keine Antwort für mehr als 10 Sekunden ein), müssen Sie diese Übungsrunde wiederholen.' + move_on)
+    block_info.append('Nun, in dieser zweiten Übungsrunde wollen wir herausfinden, ob Sie die Aufgabe genau verstanden haben. Um sicherzustellen, dass Sie Ihre jeweiligen Antworten richtig kategorisieren, werden Sie für diese Aufgabe genügend Zeit haben. Sie müssen auf jedes Item korrekt antworten. Wählen Sie eine nicht korrekte Antwort (oder geben keine Antwort für mehr als 10 Sekunden ein), müssen Sie diese Übungsrunde wiederholen. Da zunächst die Kategorie ' + blcks_base[0][0]['categ'] +  " getestet wird, werden Ihnen auch in dieser Übungsrunde nur die damit verbundenen Items präsentiert. " + target_reminder[0] + "\n" + move_on)
 
     block_info.append('Sie haben die zweite Übungsrunde geschafft. Nun folgt die dritte und letzte Übungsrunde. In dieser dritten Übungsrunde wird die Antwortzeit verkürzt sein. Eine bestimmte Anzahl an falschen Antworten ist aber erlaubt. Die Wörter (Angaben) "unvertraut", "vertraut" werden nicht mehr angezeigt, die Aufgabe bleibt jedoch dieselbe. \n\n ' + move_on)
 
-    block_info.append("Gut gemacht. Nun beginnt der eigentliche Test. In diesem Durchgang versuchen Sie " + instruction_pair[crrnt_instr] + ". Die Aufgabe bleibt dieselbe. Es wird zwei Blöcke, getrennt durch eine Pause, geben. Im ersten Block wird die Kategorie " +
+    block_info.append("Gut gemacht. Nun beginnt der eigentliche Test." + instruction_pair[crrnt_instr] + " Die Aufgabe bleibt dieselbe. Es wird zunächst zwei Blöcke, getrennt durch eine Pause, geben. Im ersten Block wird die Kategorie " +
       blcks_base[0][0]['categ'] +  " getestet, also werden Ihnen nur die damit verbundenen Items präsentiert. " +
-      target_reminder[0] +
-      "\n\nVersuchen Sie, " + instruction_pair[crrnt_instr] + ".\n" + move_on)
+      target_reminder[0] + "\n" + move_on)
 
     block_info.append(
       "Der erste Block ist nun beendet. Im zweiten Block wird die Kategorie " +
       blcks_base[1][0]['categ'] +
       " getestet. " +
       target_reminder[1] +
-      "Abgesehen davon bleibt die Aufgabe dieselbe.\n Versuchen Sie, " + instruction_pair[crrnt_instr] + ".\n" + move_on)
+      "Abgesehen davon bleibt die Aufgabe dieselbe.\n" + instruction_reminder[crrnt_instr] + "\n" + move_on)
 
     if crrnt_instr == 'speed':
         instr2 = instruction_pair['accuracy']
-    else:
+        instr_rem2 = instruction_reminder['accuracy']
+        instr_change = instruction_change['accuracy']
+    elif crrnt_instr == 'accuracy':
         instr2 = instruction_pair['speed']
+        instr_rem2 = instruction_reminder['speed']
+        instr_change = instruction_change['speed']
+    elif crrnt_instr =='control':
+        instr2 = instruction_pair['control']
+        instr_rem2 = instruction_reminder['control']
+        instr_change = instruction_change['control']
     block_info.append(
-      'Nun beginnt der zweite Durchgang des Tests. Im Gegensatz zum vorherigen Durchgang versuchen Sie nun, ' + instr2 + '\n\n Es folgt nun eine weitere kurze Übungsrunde mit Vor- und Nachnamen. \n\n Wie im vorherigen Durchgang drücken Sie  die Tasten ' + key_pair['always']['descr'] + '.\n' + move_on)
-    block_info.append(
-      "Gut gemacht. Nun beginnen die nächsten zwei Blöcke, getrennt durch eine Pause. Nochmals: im ersten Block wird die Kategorie " +
+      'Nun beginnt der zweite Teil des Tests.' + instr_change + instr2 + '\n\n Wie im vorherigen Durchgang drücken Sie  die Tasten ' + key_pair['always']['descr'] + '.\n' + 
+      "Es folgen erneut zwei Blöcke, getrennt durch eine Pause. Nochmals: im ersten Block wird die Kategorie " +
       blcks_base[2][0]['categ'] +
       " getestet, also werden Ihnen nur die damit verbundenen Items präsentiert. " +
       target_reminder[2] +
-      "\n\nVersuchen Sie, " + instr2 + ".\n" + move_on)
+      "\n" + move_on)
 
     block_info.append(
       "In diesem letzten Block wird nochmals die Kategorie " +
       blcks_base[3][0]['categ'] +
       " getestet. " +
       target_reminder[3] +
-      " \n\nVersuchen Sie, " + instr2 + "." + move_on)
+      " \n\n" + instr_rem2 + "\n" + move_on)
 
 def start_input():
     global subj_id, dems, condition, gender, categories, true_probes, true_forename, true_surname
     input_box = Dlg(title=u'Grunddaten', labelButtonOK=u'OK', labelButtonCancel=u'Abbrechen')
     input_box.addText(text=u'')
-    input_box.addField(label=u'c.', tip = '1-4')
+    input_box.addField(label=u'c.', tip = '1-12')
     input_box.addField(label=u'VP', tip = 'Ziffern')
     input_box.addText(text=u'')
     input_box.addText(text=u'Bitte ausfüllen:')
@@ -201,7 +211,7 @@ def start_input():
             condition = int(input_box.data[0])
         except ValueError:
             condition = 99
-            print("Condition must be a one-digit number!")
+            print("Condition must be a number!")
         ## CONDITIONS:
         # 1: guilty, startspeed, forename1st
         # 2: guilty, startaccuracy, forename1st
@@ -211,9 +221,12 @@ def start_input():
         # 6: innocent, startaccuracy, forename1st
         # 7: innocent, startspeed, surname1st
         # 8: innocent, startaccuracy, surname1st
-
+        # 9: guilty, control, forename1st
+        #10: innocent, control, forename1st
+        #11: guilty, control, surname1st
+        #12: innocent, control, surname1st
         # check if variables correctly given
-        if condition not in range(1,5): # range(1,9):
+        if condition not in range(1,13): # range(1,13):
             if testing:
                 condition = 1 # set value for testing to skip Dlg input box
                 print("condition was not set, now set to " + str(condition) + " for testing.")
@@ -390,37 +403,6 @@ def trm(raw_inp):
     return [w for w in raw_inp.replace(',', ' ').split(' ') if w != ''][:2]
 def target_check():
     show_instruction( task_instructions('targetcheck') + '\n\nUm weiterzugehen, drücken Sie die Leertaste.' )
-    instr_display =  TextStim(win, color=instruction_color, font='Verdana', text = u'Bitte geben Sie die Namen ein, die Sie als vertraut kategorisieren müssen und drücken Sie dann ENTER.', pos=(0, 150), height=30, wrapWidth=1100, colorSpace='rgb')
-    input_prompt =  TextStim(win, color=instruction_color, font='Verdana', text = ', '.join(categories) + ':  ', pos=(-100, 0), alignHoriz = 'right', height=35)
-    input_display =  TextStim(win, color='white', pos=(-100, -4), alignHoriz = 'left', height=35, bold = True, colorSpace='rgb')
-    typedin = ''
-    while True:
-         input_display.setText(typedin)
-         instr_display.draw()
-         input_prompt.draw()
-         input_display.draw()
-         win.flip()
-         char = waitKeys()[0]
-         if char == 'backspace' and len(typedin) > 0:
-             typedin = typedin[:-1]
-         elif char == escape_key:
-             break
-         elif char == 'return':
-             if len( trm(typedin) ) > 0:
-                 break
-         elif len(char) == 1 and char.isalpha():
-             typedin += char.upper()
-         elif char == 'space':
-             typedin += ' '
-         elif char == 'comma':
-             typedin += ','
-    typedin_words = trm(typedin)
-    if not ( char == escape_key or typedin_words[0] == 'PASS' or (the_targets[0] in typedin_words and the_targets[1] in typedin_words) ):
-        instruction_page.setText('Falsch. Lesen Sie bitte die Instruktionen nochmals!')
-        instruction_page.draw()
-        win.flip()
-        wait(2)
-        target_check()
 
 def create_item_base():
     global blcks_base, stims_base, targetrefs, nontargrefs, the_targets, the_main_items, task_probes
@@ -580,11 +562,20 @@ def inducer_items():
             stim_dicts_f.insert( choice(good_indexes) , blck_itms_temp.pop(0))
     return stim_dicts_f # return final list (for blck_items var assignment)
 
+
 def practice_items():
     print('practice_items()')
-    blck_itms_temp = deepcopy(targetrefs + nontargrefs) # get inducers
-    for cat in categories:
-        blck_itms_temp += deepcopy( stims_base[cat] ) # add all other items
+    blck_itms_temp = []
+    if blocks_order == 0:
+        blck_itms_temp += deepcopy(stims_base[categories[0]])
+    else:
+        blck_itms_temp += deepcopy(stims_base[categories[1]])
+    if block_num == 3:
+        blck_itms_temp += deepcopy(targetrefs + nontargrefs) #get inducers
+        if blocks_order == 0:
+            blck_itms_temp += deepcopy(stims_base[categories[0]])
+        else:
+            blck_itms_temp += deepcopy(stims_base[categories[1]])
     shuffle(blck_itms_temp) # shuffle it, why not
     # below the pseudorandomization to avoid close repetition of similar items (same item type)
     safecount = 0 # just to not freeze the app if sth goes wrong
@@ -608,6 +599,8 @@ def practice_items():
             stim_dicts_f.insert( choice(good_indexes) , blck_itms_temp.pop(0))
     return stim_dicts_f # return final list (for blck_items var assignment)
 
+
+
 def diginto_dict(dct, indx, key_name, min_dstnc):
     if indx - min_dstnc < 0: # if starting index is negative, it counts from the end of the list; thats no good
         strt = 0 # so if negative, we just set it to 0
@@ -621,17 +614,20 @@ def basic_variables():
     global stopwatch, blocks_order, instr_order, guilt, block_num, all_main_rts, kb_device, crrnt_instr, practice_repeated, firsttime
     stopwatch = Clock()
     guilt = 1 # always guilty
-    #if condition <= 4:
+    #if condition in [5,6,7,8,10,12]:
     #    guilt = 1
     #else:
     #    guilt = 0
-    if condition % 2 != 0:
+    if condition % 2 != 0 and condition <9:
         instr_order = 'startspeed'
         crrnt_instr = 'speed'
-    else:
+    elif condition % 2 == 0 and condition <9:
         instr_order = 'startaccuracy'
         crrnt_instr = 'accuracy'
-    if condition in [1,2]:  # or in [1,2,5,6]: // same as: (condition+1) % 4 <= 1
+    elif condition >= 9:
+        instr_order = 'control'
+        crrnt_instr = 'control'
+    if condition in [1,2,5,6,9,10]:  # or in [1,2,5,6,9,10]: // same as: (condition+1) % 4 <= 1
         blocks_order = 0 # forename1st
     else:
         blocks_order = 1 # surname1st
@@ -646,9 +642,14 @@ def basic_variables():
         # 6: innocent, startaccuracy, forename1st
         # 7: innocent, startspeed, surname1st
         # 8: innocent, startaccuracy, surname1st
+
+        # 9: guilty, control, forename1st
+        #10: innocent, control, forename1st
+        #11: guilty, control, surname1st
+        #12: innocent, control, surname1st
     block_num = 0
     all_main_rts = { 'probe' : [], 'irrelevant': [] }
-    practice_repeated = { 'block1' : 0, 'block2': 0, 'block3': 0, 'block6': 0 }
+    practice_repeated = { 'block1' : 0, 'block2': 0, 'block3': 0}
     firsttime = True
     io = launchHubServer()
     kb_device = io.devices.keyboard
@@ -701,7 +702,7 @@ def next_block():
         if block_num == 0:
             rt_data_dict = {}
             assign_keys()
-        if ( block_num in (0, 1, 2, 3, 6) ):
+        if ( block_num in (0, 1, 2, 3) ):
             if block_num == 0 or practice_eval():
                 block_num+=1
             if block_num == 1:
@@ -713,7 +714,7 @@ def next_block():
                     firsttime = False
                 blck_itms = practice_items()
                 ddline = 10
-            elif block_num in (3, 6):
+            elif block_num == 3:
                 blck_itms = practice_items()
                 ddline = main_ddline
             else:
@@ -723,10 +724,12 @@ def next_block():
             if block_num == 6:
                 if instr_order == 'startspeed':
                     crrnt_instr = 'accuracy'
-                else:
+                elif instr_order == 'startaccuracy':
                     crrnt_instr = 'speed'
+                elif instr_order == 'control':
+                    crrnt_instr = 'control'
                 assign_keys()
-                blck_itms = practice_items()
+                blck_itms = main_items()
             else:
                 blck_itms = main_items()
         run_block()
