@@ -15,7 +15,7 @@ from datetime import datetime
 from itertools import permutations
 
 ## for testing
-testing = False # True for testing, False for real recording
+testing = True # True for testing, False for real recording
 ###
 main_ddline = 1 # sec
 isi_min_max = (500, 800)
@@ -35,8 +35,10 @@ surnms = [u"Bauer", u"Müllner", u"Langer", u"Petrovic", u"Huber", u"Mayer", u"L
 targetref_words = ('VERTRAUT', 'MEIN', 'RELEVANT')
 nontargref_words = ('UNVERTRAUT', 'FREMD', 'UNBEKANNT', 'ANDERE', 'SONSTIGES', 'IRRELEVANT')
 
-key_pairs = { 'narrow' : { 'nontarg': 'k', 'target' : 'l', 'descr' : 'K (linker Zeigefinger) und L (rechter Zeigefinger)' },
-             'wide': { 'nontarg': 's', 'target' : 'num_5', 'descr' : 'S (linker Zeigefinger) und Nummer 5 (rechter Zeigefinger, auf dem Ziffernblock)' } }
+key_pair = { 'always' : { 'nontarg': 'k', 'target' : 'l', 'descr' : 'K (linker Zeigefinger) und L (rechter Zeigefinger)' }}
+
+
+instruction_pair = { 'speed' : 'so SCHNELL wie möglich zu antworten und so wenig Zeit wie möglich bis zu der Reaktion auf die gezeigten Wörter verstreichen zu lassen', 'accuracy' : 'so GENAU wie möglich zu antworten und bei der Reaktion auf die gezeigten Wörter so wenig Fehler wie möglich zu machen'}
 
 if testing:
     escape_key = 'escape'
@@ -80,7 +82,7 @@ def ending():
     else:
         dcit = '-'
         end_feed = ''
-    info = 'Danke für die Teilnahme. Wenn Sie möchten, können Sie gehen, aber bitte seien Sie leise dabei.\n\nKurze Information über den Test:\n\nIn dieser Studie versuchen wir, Ihre wirklichen selbstbezogenen Details (z.B. Ihren tatsächlichen Vornamen) von solchen zu unterscheiden, die Ihnen nicht zugehörig sind (z.B. andere Vornamen). Ziel dieses Tests ist es, anhand von Reaktionszeiten herauszufinden, wenn eine Person versucht, bestimmte Daten zu verschleiern bzw. zu verheimlichen. Dies geschieht auf Basis der Vermutung, dass Reaktionszeiten für die Ihnen präsentierten eigenen Namen langsamer ausfallen, als im Falle anderer Namen. Hauptanliegen dieser Studie ist es, zu zeigen, ob dies besser mit weit oder eng platzierten Antworttasten funktioniert.' + end_feed + '\n\nFür weitere Informationen wenden Sie sich bitte an den Versuchsleiter (oder schreiben Sie eine E-mail an Gaspar Lukacs).'
+    info = 'Danke für die Teilnahme. Wenn Sie möchten, können Sie gehen, aber bitte seien Sie leise dabei.\n\nKurze Information über den Test:\n\nIn dieser Studie versuchen wir, Ihre wirklichen selbstbezogenen Details (z.B. Ihren tatsächlichen Vornamen) von solchen zu unterscheiden, die Ihnen nicht zugehörig sind (z.B. andere Vornamen). Ziel dieses Tests ist es, anhand von Reaktionszeiten herauszufinden, wenn eine Person versucht, bestimmte Daten zu verschleiern bzw. zu verheimlichen. Dies geschieht auf Basis der Vermutung, dass Reaktionszeiten für die Ihnen präsentierten eigenen Namen langsamer ausfallen, als im Falle anderer Namen. Hauptanliegen dieser Studie ist es, zu zeigen, ob dies besser mit der Aufforderung zu einer möglichst schnellen Reaktion oder zu einer möglichst genauen Reaktion funktioniert.' + end_feed + '\n\nFür weitere Informationen wenden Sie sich bitte an den Versuchsleiter (oder schreiben Sie eine E-mail an Gaspar Lukacs).'
 
     data_out.write(dems + "/" +
       "/".join( [ str(nmbr) for nmbr in
@@ -105,7 +107,7 @@ def set_screen(): # screen properties
 
 
 def task_instructions( whichtext = ''):
-    keys_info = 'Während des Tests sehen Sie Wörter in der Mitte des Bildschirms auftauchen. Sie müssen jedes Wort entweder mit der linken oder mit der rechten Antworttaste kategorisieren. In diesem Abschnitt sind diese Tasten ' + key_pairs[crrnt_wdth]['descr'] + '. '
+    keys_info = 'Während des Tests sehen Sie Wörter in der Mitte des Bildschirms auftauchen. Sie müssen jedes Wort entweder mit der linken oder mit der rechten Antworttaste kategorisieren. Diese Tasten sind ' + key_pair['always']['descr'] + '. '
     inducer_info = 'Kategorisieren Sie Ausdrücke, die sich auf Vertrautheit beziehen, mit der rechten Taste. Diese Ausdrücke sind: ' + ', '.join(targetref_words).upper() + ' \nAuf der anderen Seite, kategorisieren Sie Ausdrücke, die sich auf Unvertrautheit beziehen, mit der linken Taste. Diese Ausdrücke sind: ' + ', '.join(nontargref_words).upper()
     main_item_info = ' Kategorisieren Sie die folgenden Namen als vertraut mit der rechten Taste: ' + ', '.join(the_targets).upper() + "\n\nKategorisieren Sie alle anderen Namen als unvertraut mit der linken Taste. (Diese andere Namen sind: " + ', '.join(the_main_items).upper() + ". Zur Erinnerung: Sie leugnen, irgendwelche der anderen Namen als relevant für Sie wahrzunehmen, also drücken Sie für alle diese die linke Taste.)"
     if whichtext == 'targetcheck':
@@ -140,39 +142,39 @@ def set_block_info():
 
     block_info.append('Nun, in dieser zweiten Übungsrunde wollen wir herausfinden, ob Sie die Aufgabe genau verstanden haben. Um sicherzustellen, dass Sie Ihre jeweiligen Antworten richtig kategorisieren, werden Sie für diese Aufgabe genügend Zeit haben. Sie müssen auf jedes Item korrekt antworten. Wählen Sie eine nicht korrekte Antwort (oder geben keine Antwort für mehr als 10 Sekunden ein), müssen Sie diese Übungsrunde wiederholen.' + move_on)
 
-    block_info.append('Sie haben die zweite Übungsrunde geschafft. Nun folgt die dritte und letzte Übungsrunde. In dieser dritten Übungsrunde wird die Antwortzeit verkürzt sein. Eine bestimmte Anzahl an falschen Antworten ist aber erlaubt. Die Wörter (Angaben) "unvertraut", "vertraut" werden nicht mehr angezeigt, die Aufgabe bleibt jedoch dieselbe. \n\nVersuchen Sie, so genau und schnell wie möglich zu antworten.' + move_on)
+    block_info.append('Sie haben die zweite Übungsrunde geschafft. Nun folgt die dritte und letzte Übungsrunde. In dieser dritten Übungsrunde wird die Antwortzeit verkürzt sein. Eine bestimmte Anzahl an falschen Antworten ist aber erlaubt. Die Wörter (Angaben) "unvertraut", "vertraut" werden nicht mehr angezeigt, die Aufgabe bleibt jedoch dieselbe. \n\n ' + move_on)
 
-    block_info.append("Gut gemacht. Nun beginnt der eigentliche Test. Die Aufgabe bleibt dieselbe. Es wird zwei Blöcke, getrennt durch eine Pause, geben. Im ersten Block wird die Kategorie " +
+    block_info.append("Gut gemacht. Nun beginnt der eigentliche Test. In diesem Durchgang versuchen Sie " + instruction_pair[crrnt_instr] + ". Die Aufgabe bleibt dieselbe. Es wird zwei Blöcke, getrennt durch eine Pause, geben. Im ersten Block wird die Kategorie " +
       blcks_base[0][0]['categ'] +  " getestet, also werden Ihnen nur die damit verbundenen Items präsentiert. " +
       target_reminder[0] +
-      "\n\nVersuchen Sie, so genau und schnell wie möglich zu antworten.\n" + move_on)
+      "\n\nVersuchen Sie, " + instruction_pair[crrnt_instr] + ".\n" + move_on)
 
     block_info.append(
       "Der erste Block ist nun beendet. Im zweiten Block wird die Kategorie " +
       blcks_base[1][0]['categ'] +
       " getestet. " +
       target_reminder[1] +
-      "Abgesehen davon bleibt die Aufgabe dieselbe.\n\nVersuchen Sie, so genau und schnell wie möglich zu antworten." + move_on)
+      "Abgesehen davon bleibt die Aufgabe dieselbe.\n Versuchen Sie, " + instruction_pair[crrnt_instr] + ".\n" + move_on)
 
-    if crrnt_wdth == 'wide':
-        keys2 = key_pairs['narrow']['descr']
+    if crrnt_instr == 'speed':
+        instr2 = instruction_pair['accuracy']
     else:
-        keys2 = key_pairs['wide']['descr']
+        instr2 = instruction_pair['speed']
     block_info.append(
-      'Anstatt der vorherigen Antworttasten, drücken Sie nun die Tasten ' + keys2 + '.\n\n Es folgt nun eine weitere kurze Übungsrunde mit Vor- und Nachnamen, damit Sie sich an die neue Position gewöhnen könnnen. (Danach werden Sie die gleichen zwei Blöcke wie mit der vorherigen Handpositionierung wiederholen). \n\nVersuchen Sie, so genau und schnell wie möglich zu antworten.\n' + move_on)
+      'Nun beginnt der zweite Durchgang des Tests. Im Gegensatz zum vorherigen Durchgang versuchen Sie nun, ' + instr2 + '\n\n Es folgt nun eine weitere kurze Übungsrunde mit Vor- und Nachnamen. \n\n Wie im vorherigen Durchgang drücken Sie  die Tasten ' + key_pair['always']['descr'] + '.\n' + move_on)
     block_info.append(
       "Gut gemacht. Nun beginnen die nächsten zwei Blöcke, getrennt durch eine Pause. Nochmals: im ersten Block wird die Kategorie " +
       blcks_base[2][0]['categ'] +
       " getestet, also werden Ihnen nur die damit verbundenen Items präsentiert. " +
       target_reminder[2] +
-      "\n\nVersuchen Sie, so genau und schnell wie möglich zu antworten.\n" + move_on)
+      "\n\nVersuchen Sie, " + instr2 + ".\n" + move_on)
 
     block_info.append(
       "In diesem letzten Block wird nochmals die Kategorie " +
       blcks_base[3][0]['categ'] +
       " getestet. " +
       target_reminder[3] +
-      " \n\nVersuchen Sie, so genau und schnell wie möglich zu antworten." + move_on)
+      " \n\nVersuchen Sie, " + instr2 + "." + move_on)
 
 def start_input():
     global subj_id, dems, condition, gender, categories, true_probes, true_forename, true_surname
@@ -201,14 +203,14 @@ def start_input():
             condition = 99
             print("Condition must be a one-digit number!")
         ## CONDITIONS:
-        # 1: guilty, startwide, forename1st
-        # 2: guilty, startnarrow, forename1st
-        # 3: guilty, startwide, surname1st
-        # 4: guilty, startnarrow, surname1st
-        # 5: innocent, startwide, forename1st
-        # 6: innocent, startnarrow, forename1st
-        # 7: innocent, startwide, surname1st
-        # 8: innocent, startnarrow, surname1st
+        # 1: guilty, startspeed, forename1st
+        # 2: guilty, startaccuracy, forename1st
+        # 3: guilty, startspeed, surname1st
+        # 4: guilty, startaccuracy, surname1st
+        # 5: innocent, startspeed, forename1st
+        # 6: innocent, startaccuracy, forename1st
+        # 7: innocent, startspeed, surname1st
+        # 8: innocent, startaccuracy, surname1st
 
         # check if variables correctly given
         if condition not in range(1,5): # range(1,9):
@@ -241,7 +243,7 @@ def start_input():
         if len(true_forename) < 2:
             print('forename less than 2 chars')
             if testing:
-                true_forename = 'Gaspar'
+                true_forename = 'Till'
             else:
                 stop = True
         elif not true_forename.isalpha():
@@ -251,7 +253,7 @@ def start_input():
         if len(true_surname) < 2:
             print('surname less than 2 chars')
             if testing:
-                true_surname = 'Lukacs'
+                true_surname = 'Lubczyk'
             else:
                 stop = True
         elif not true_surname.isalpha():
@@ -616,7 +618,7 @@ def diginto_dict(dct, indx, key_name, min_dstnc):
 
 
 def basic_variables():
-    global stopwatch, blocks_order, width_order, guilt, block_num, all_main_rts, kb_device, crrnt_wdth, practice_repeated, firsttime
+    global stopwatch, blocks_order, instr_order, guilt, block_num, all_main_rts, kb_device, crrnt_instr, practice_repeated, firsttime
     stopwatch = Clock()
     guilt = 1 # always guilty
     #if condition <= 4:
@@ -624,26 +626,26 @@ def basic_variables():
     #else:
     #    guilt = 0
     if condition % 2 != 0:
-        width_order = 'startwide'
-        crrnt_wdth = 'wide'
+        instr_order = 'startspeed'
+        crrnt_instr = 'speed'
     else:
-        width_order = 'startnarrow'
-        crrnt_wdth = 'narrow'
+        instr_order = 'startaccuracy'
+        crrnt_instr = 'accuracy'
     if condition in [1,2]:  # or in [1,2,5,6]: // same as: (condition+1) % 4 <= 1
         blocks_order = 0 # forename1st
     else:
         blocks_order = 1 # surname1st
      ## CONDITIONS:
-        # 1: guilty, startwide, forename1st
-        # 2: guilty, startnarrow, forename1st
-        # 3: guilty, startwide, surname1st
-        # 4: guilty, startnarrow, surname1st
+        # 1: guilty, startspeed, forename1st
+        # 2: guilty, startaccuracy, forename1st
+        # 3: guilty, startspeed, surname1st
+        # 4: guilty, startaccuracy, surname1st
 
         # not yet:
-        # 5: innocent, startwide, forename1st
-        # 6: innocent, startnarrow, forename1st
-        # 7: innocent, startwide, surname1st
-        # 8: innocent, startnarrow, surname1st
+        # 5: innocent, startspeed, forename1st
+        # 6: innocent, startaccuracy, forename1st
+        # 7: innocent, startspeed, surname1st
+        # 8: innocent, startaccuracy, surname1st
     block_num = 0
     all_main_rts = { 'probe' : [], 'irrelevant': [] }
     practice_repeated = { 'block1' : 0, 'block2': 0, 'block3': 0, 'block6': 0 }
@@ -654,7 +656,7 @@ def basic_variables():
 # create output file, begin writing, reset parameters
 def create_file():
     global data_out
-    f_name = 'exp_ecit_keys_' + str(condition) + "_" + str(width_order) + "_" + str(guilt) + "_ord" + str(blocks_order) + "_" + subj_id + '.txt'
+    f_name = 'exp_ecit_keys_' + str(condition) + "_" + str(instr_order) + "_" + str(guilt) + "_ord" + str(blocks_order) + "_" + subj_id + '.txt'
     data_out=open(f_name, 'a', encoding='utf-8')
     data_out.write( '\t'.join( [ "subject_id", "condition", "width", "phase", "block_number", "trial_number", "stimulus_shown", "category", "stim_type", "response_key", "rt_start", "incorrect", "too_slow", "press_duration", "isi", "date_in_ms" ] ) + "\n" )
     print("File created:", f_name)
@@ -667,7 +669,7 @@ def str_if_num( num_val ):
 
 def add_resp():
     global incorrect, tooslow
-    data_out.write( '\t'.join( [ subj_id, str(condition), crrnt_wdth, crrnt_phase, str(block_num), str(trial_num+1), stim_text, stim_current["categ"], stim_type, resp_key, str_if_num(rt_start), str(incorrect), str(tooslow), str_if_num(press_dur), str_if_num( isi_min_max[0]/1000 + isi_delay ), str(strftime("%Y%m%d%H%M%S", gmtime())) ] ) + '\n' )
+    data_out.write( '\t'.join( [ subj_id, str(condition), crrnt_instr, crrnt_phase, str(block_num), str(trial_num+1), stim_text, stim_current["categ"], stim_type, resp_key, str_if_num(rt_start), str(incorrect), str(tooslow), str_if_num(press_dur), str_if_num( isi_min_max[0]/1000 + isi_delay ), str(strftime("%Y%m%d%H%M%S", gmtime())) ] ) + '\n' )
     print("resp key:", resp_key, "for stim:", stim_text, "incorrect:", incorrect, "rt_start:", rt_start)
 
 def start_with_space():
@@ -689,11 +691,11 @@ def draw_labels():
 
 def assign_keys():
     global targetkey, nontargetkey
-    targetkey = key_pairs[crrnt_wdth]['target']
-    nontargetkey = key_pairs[crrnt_wdth]['nontarg']
+    targetkey = key_pair['always']['target']
+    nontargetkey = key_pair['always']['nontarg']
 
 def next_block():
-    global ddline, block_num, rt_data_dict, crrnt_wdth, blck_itms, firsttime, crrnt_phase
+    global ddline, block_num, rt_data_dict, crrnt_instr, blck_itms, firsttime, crrnt_phase
     if len(blcks_base) > 0:
         crrnt_phase = 'practice'
         if block_num == 0:
@@ -719,10 +721,10 @@ def next_block():
         else:
             block_num+=1
             if block_num == 6:
-                if width_order == 'startwide':
-                    crrnt_wdth = 'narrow'
+                if instr_order == 'startspeed':
+                    crrnt_instr = 'accuracy'
                 else:
-                    crrnt_wdth = 'wide'
+                    crrnt_instr = 'speed'
                 assign_keys()
                 blck_itms = practice_items()
             else:
