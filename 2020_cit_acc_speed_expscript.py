@@ -35,14 +35,16 @@ surnms = [u"Bauer", u"Müllner", u"Langer", u"Petrovic", u"Huber", u"Mayer", u"L
 targetref_words = ('VERTRAUT', 'MEIN', 'RELEVANT')
 nontargref_words = ('UNVERTRAUT', 'FREMD', 'UNBEKANNT', 'ANDERE', 'SONSTIGES', 'IRRELEVANT')
 
-key_pair = { 'always' : { 'nontarg': 'k', 'target' : 'l', 'descr' : 'K (linker Zeigefinger) und L (rechter Zeigefinger)' }}
-
+key_pair = { 'always' : { 'nontarg': 'e', 'target' : 'i', 'descr' : 'E (linker Zeigefinger) und I (rechter Zeigefinger)' }}
+key_assignment = choice(['rechten', 'linken'])
+if key_assignment == 'rechten':
+    other_key = 'linken'
+else:
+    other_key = 'rechten'
 
 instruction_pair = { 'speed' : 'Versuchen Sie, so SCHNELL wie möglich zu antworten und so wenig Zeit wie möglich bis zu der Reaktion auf die gezeigten Wörter verstreichen zu lassen. Achten Sie also auf Geschwindigkeit und drücken Sie die Antworttaste so schnell wie es Ihnen möglich ist.', 'accuracy' : 'Versuchen Sie, so GENAU wie möglich zu antworten und bei der Reaktion auf die gezeigten Wörter so wenig Fehler wie möglich zu machen. Achten Sie also auf Genauigkeit und darauf, dass Sie immer die korrekte Antworttaste drücken.', 'control' : ' '}
 
 instruction_reminder = { 'speed' : 'Achten Sie weiterhin auf Geschwindigkeit und antworten Sie so schnell wie es Ihnen möglich ist.', 'accuracy' : 'Achten Sie weiterhin auf Genauigkeit und drücken Sie stets die korrekte Antworttaste.', 'control' : ' '}
-
-instruction_change = {'speed': 'Im Gegensatz zu den vorherigen Blöcken:', 'accuracy' : 'Im Gegensatz zu den vorherigen Blöcken:', 'control' : ' '}
 
 
 if testing:
@@ -77,25 +79,14 @@ def execute():
 
 def ending():
     full_duration = round( ( datetime.now() - start_date ).total_seconds()/60, 2)
-
-    if len(all_main_rts['probe']) > 1 and len(all_main_rts['irrelevant']) > 1:
-        dcit = (mean(all_main_rts['probe']) - mean(all_main_rts['irrelevant'])) / std(all_main_rts['irrelevant'])
-        if dcit > 0.1:
-            end_feed = '\n\nBezüglich Ihrer Ergebnisse: Ihre Reaktionszeit war für die Namen ' + ', '.join( task_probes ).upper() + ' signifikant langsamer als für andere Namen. Also vermuten wir, dass das Ihr richtiger Name ist.'
-        else:
-            end_feed = '\n\nBezüglich Ihrer Ergebnisse: Ihre Reaktionszeit war für die Namen ' + ', '.join( task_probes ).upper() + ' nicht signifikant langsamer als für andere Namen. Also vermuten wir, dass das nicht Ihr Name ist.'
-    else:
-        dcit = '-'
-        end_feed = ''
-    info = 'Danke für die Teilnahme. Wenn Sie möchten, können Sie gehen, aber bitte seien Sie leise dabei.\n\nKurze Information über den Test:\n\nIn dieser Studie versuchen wir, Ihre wirklichen selbstbezogenen Details (z.B. Ihren tatsächlichen Vornamen) von solchen zu unterscheiden, die Ihnen nicht zugehörig sind (z.B. andere Vornamen). Ziel dieses Tests ist es, anhand von Reaktionszeiten herauszufinden, wenn eine Person versucht, bestimmte Daten zu verschleiern bzw. zu verheimlichen. Dies geschieht auf Basis der Vermutung, dass Reaktionszeiten für die Ihnen präsentierten eigenen Namen langsamer ausfallen, als im Falle anderer Namen. Hauptanliegen dieser Studie ist es, zu zeigen, ob dies besser mit der Aufforderung zu einer möglichst schnellen Reaktion oder zu einer möglichst genauen Reaktion funktioniert.' + end_feed + '\n\nFür weitere Informationen wenden Sie sich bitte an den Versuchsleiter (oder schreiben Sie eine E-mail an Gaspar Lukacs).'
+    info = 'Danke für die Teilnahme. Wenn Sie möchten, können Sie gehen, aber bitte seien Sie leise dabei.\n\nKurze Information über den Test:\n\nIn dieser Studie versuchen wir, Ihre wirklichen selbstbezogenen Details (z.B. Ihren tatsächlichen Vornamen) von solchen zu unterscheiden, die Ihnen nicht zugehörig sind (z.B. andere Vornamen). Ziel dieses Tests ist es, anhand von Reaktionszeiten herauszufinden, wenn eine Person versucht, bestimmte Daten zu verschleiern bzw. zu verheimlichen. Dies geschieht auf Basis der Vermutung, dass Reaktionszeiten für die Ihnen präsentierten eigenen Namen langsamer ausfallen, als im Falle anderer Namen. Hauptanliegen dieser Studie ist es, zu zeigen, ob dies besser mit der Aufforderung zu einer möglichst schnellen Reaktion oder zu einer möglichst genauen Reaktion funktioniert.\n\nFür weitere Informationen wenden Sie sich bitte an den Versuchsleiter (oder schreiben Sie eine E-mail an Gaspar Lukacs).'
 
     data_out.write(dems + "/" +
       "/".join( [ str(nmbr) for nmbr in
       [practice_repeated['block1'],
       practice_repeated['block2'],
       practice_repeated['block3'],
-      full_duration,
-      dcit] ] ) +
+      full_duration] ] ) +
       "\n")
     data_out.close()
     show_instruction( info )
@@ -104,22 +95,25 @@ def set_screen(): # screen properties
     global win, start_text, left_label, right_label, center_disp, instruction_page
     win = Window([1280, 1000], color='Black', fullscr = 1, units = 'pix', allowGUI = True) # 1280 1024
     start_text = TextStim(win, color=instruction_color, font='Verdana', text = u'Um anzufangen, bitte die Leertaste drücken.', pos = [0,-300], height=35, bold = True, wrapWidth= 1100)
-    left_label = TextStim(win, color='white', font='Verdana', text = 'unvertraut', pos = [-350,-160], height=35, alignHoriz='center')
-    right_label = TextStim(win, color='white', font='Verdana', text = 'vertraut', pos = [350,-160], height=35, alignHoriz='center')
+    if key_assignment == 'rechten':
+        left_label = TextStim(win, color='white', font='Verdana', text = 'unvertraut', pos = [-350,-160], height=35, alignHoriz='center')
+        right_label = TextStim(win, color='white', font='Verdana', text = 'vertraut', pos = [350,-160], height=35, alignHoriz='center')
+    else:
+        left_label = TextStim(win, color='white', font='Verdana', text = 'vertraut', pos = [-350,-160], height=35, alignHoriz='center')
+        right_label = TextStim(win, color='white', font='Verdana', text = 'unvertraut', pos = [350,-160], height=35, alignHoriz='center')
     center_disp = TextStim(win, color='white', font='Arial', text = '', height = 60)
     instruction_page = TextStim(win, wrapWidth = 1200, height = 28, font='Verdana', color = instruction_color)
 
 
 def task_instructions( whichtext = ''):
+    global main_item_info
     keys_info = 'Während des Tests sehen Sie Wörter in der Mitte des Bildschirms auftauchen. Sie müssen jedes Wort entweder mit der linken oder mit der rechten Antworttaste kategorisieren. Diese Tasten sind ' + key_pair['always']['descr'] + '. '
-    inducer_info = 'Kategorisieren Sie Ausdrücke, die sich auf Vertrautheit beziehen, mit der rechten Taste. Diese Ausdrücke sind: ' + ', '.join(targetref_words).upper() + ' \nAuf der anderen Seite, kategorisieren Sie Ausdrücke, die sich auf Unvertrautheit beziehen, mit der linken Taste. Diese Ausdrücke sind: ' + ', '.join(nontargref_words).upper()
-    main_item_info = ' Kategorisieren Sie die folgenden Namen als vertraut mit der rechten Taste: ' + ', '.join(the_targets).upper() + "\n\nKategorisieren Sie alle anderen Namen als unvertraut mit der linken Taste. (Diese andere Namen sind: " + ', '.join(the_main_items).upper() + ". Zur Erinnerung: Sie leugnen, irgendwelche der anderen Namen als relevant für Sie wahrzunehmen, also drücken Sie für alle diese die linke Taste.)"
-    if whichtext == 'targetcheck':
-        return 'Super, Sie haben die erste Übungsrunde geschafft. Jetzt werden Namen dazu kommen, die Sie ebenso kategorisieren müssen. ' + main_item_info
-    elif whichtext == 'firstblock':
+    inducer_info = 'Kategorisieren Sie Ausdrücke, die sich auf Vertrautheit beziehen, mit der ' + key_assignment + ' Taste. Diese Ausdrücke sind: ' + ', '.join(targetref_words).upper() + ' \nAuf der anderen Seite, kategorisieren Sie Ausdrücke, die sich auf Unvertrautheit beziehen, mit der ' + other_key + ' Taste. Diese Ausdrücke sind: ' + ', '.join(nontargref_words).upper()
+    main_item_info = ' Kategorisieren Sie die folgenden Namen als vertraut mit der ' + key_assignment + ' Taste: ' + ', '.join(the_targets).upper() + "\nKategorisieren Sie alle anderen Namen als unvertraut mit der " + other_key + " Taste. (Diese andere Namen sind: " + ', '.join(the_main_items).upper() + ". Zur Erinnerung: Sie leugnen, irgendwelche der anderen Namen als relevant für Sie wahrzunehmen, also drücken Sie für alle diese die linke Taste.)"
+    if whichtext == 'firstblock':
         return keys_info + '\n\nEs werden drei kurze Übungsrunden stattfinden. In der ersten Runde müssen Sie Ausdrücke kategorisieren, die mit Vertrautheit zu tun haben. '  + inducer_info
     elif block_num > 1:
-        return  keys_info + inducer_info + '\n\nDie restlichen Items sind Vor- und Nachnamen.' + main_item_info + '\n\nHinweis: achten Sie nur auf die Begriffe die mit der rechten Taste kategorisiert werden müssen (' + ', '.join(the_targets + list(targetref_words)).upper() + ') und drücken Sie für alles andere die linke Taste.'
+        return  keys_info + inducer_info + '\n\nDie restlichen Items sind Vor- und Nachnamen.' + main_item_info + '\n\nHinweis: achten Sie nur auf die Begriffe die mit der' + key_assignment + ' Taste kategorisiert werden müssen (' + ', '.join(the_targets + list(targetref_words)).upper() + ') und kategorisieren Sie alles andere mit der ' + other_key + ' Taste.'
     else:
         return  keys_info + inducer_info
 
@@ -133,22 +127,16 @@ def set_block_info():
         ". ",
         "Zur Erinnerung: der als vertraut zu kategorisierende Name ist " +
         blcks_base[1][1]['word'].upper() +
-        ". ",
-        "Zur Erinnerung: der als vertraut zu kategorisierende Name ist " +
-        blcks_base[2][1]['word'].upper() +
-        ". ",
-        "Zur Erinnerung: der als vertraut zu kategorisierende Name ist " +
-        blcks_base[3][1]['word'].upper() +
         ". "
       ]
 
     block_info.append( task_instructions('firstblock') + '\n\nUm weiterzugehen, drücken Sie die Leertaste.')
 
-    block_info.append('Nun, in dieser zweiten Übungsrunde wollen wir herausfinden, ob Sie die Aufgabe genau verstanden haben. Um sicherzustellen, dass Sie Ihre jeweiligen Antworten richtig kategorisieren, werden Sie für diese Aufgabe genügend Zeit haben. Sie müssen auf jedes Item korrekt antworten. Wählen Sie eine nicht korrekte Antwort (oder geben keine Antwort für mehr als 10 Sekunden ein), müssen Sie diese Übungsrunde wiederholen. Da zunächst die Kategorie ' + blcks_base[0][0]['categ'] +  " getestet wird, werden Ihnen auch in dieser Übungsrunde nur die damit verbundenen Items präsentiert. " + target_reminder[0] + "\n" + move_on)
+    block_info.append('Es folgt die zweite Übungsrunde. Es werden im Folgenden weitere Items hinzukommen:' + main_item_info + '\n\nUm sicherzustellen, dass Sie Ihre jeweiligen Antworten richtig kategorisieren, werden Sie für diese Aufgabe genügend Zeit haben. Sie müssen auf jedes Item korrekt antworten. Wählen Sie eine nicht korrekte Antwort (oder geben keine Antwort für mehr als 10 Sekunden ein), müssen Sie diese Übungsrunde wiederholen. \n\nZunächst wird die Kategorie ' + blcks_base[0][0]['categ'] +  " getestet, daher werden Ihnen auch in dieser Übungsrunde nur die damit verbundenen Items präsentiert. " + target_reminder[0] + move_on)
 
-    block_info.append('Sie haben die zweite Übungsrunde geschafft. Nun folgt die dritte und letzte Übungsrunde. In dieser dritten Übungsrunde wird die Antwortzeit verkürzt sein. Eine bestimmte Anzahl an falschen Antworten ist aber erlaubt. Die Wörter (Angaben) "unvertraut", "vertraut" werden nicht mehr angezeigt, die Aufgabe bleibt jedoch dieselbe. \n\n ' + move_on)
+    block_info.append('Sie haben die zweite Übungsrunde geschafft. Nun folgt die dritte und letzte Übungsrunde. In dieser dritten Übungsrunde wird die Antwortzeit verkürzt sein. Eine bestimmte Anzahl an falschen Antworten ist aber erlaubt. Die Wörter (Angaben) "unvertraut", "vertraut" werden nicht mehr angezeigt, die Aufgabe bleibt jedoch dieselbe. Es werden nun sowohl die Ausdrück aus der ersten Übungsrunde als auch die Kategorie ' + blcks_base[0][0]['categ']+ ' aus der zweiten Übungsrunde gezeigt.\n\n ' + move_on)
 
-    block_info.append("Gut gemacht. Nun beginnt der eigentliche Test." + instruction_pair[crrnt_instr] + " Die Aufgabe bleibt dieselbe. Es wird zunächst zwei Blöcke, getrennt durch eine Pause, geben. Im ersten Block wird die Kategorie " +
+    block_info.append("Gut gemacht. Nun beginnt der eigentliche Test." + instruction_pair[crrnt_instr] + " Die Aufgabe bleibt dieselbe. Es wird zwei Blöcke, getrennt durch eine Pause, geben. Im ersten Block wird die Kategorie " +
       blcks_base[0][0]['categ'] +  " getestet, also werden Ihnen nur die damit verbundenen Items präsentiert. " +
       target_reminder[0] + "\n" + move_on)
 
@@ -159,32 +147,7 @@ def set_block_info():
       target_reminder[1] +
       "Abgesehen davon bleibt die Aufgabe dieselbe.\n" + instruction_reminder[crrnt_instr] + "\n" + move_on)
 
-    if crrnt_instr == 'speed':
-        instr2 = instruction_pair['accuracy']
-        instr_rem2 = instruction_reminder['accuracy']
-        instr_change = instruction_change['accuracy']
-    elif crrnt_instr == 'accuracy':
-        instr2 = instruction_pair['speed']
-        instr_rem2 = instruction_reminder['speed']
-        instr_change = instruction_change['speed']
-    elif crrnt_instr =='control':
-        instr2 = instruction_pair['control']
-        instr_rem2 = instruction_reminder['control']
-        instr_change = instruction_change['control']
-    block_info.append(
-      'Nun beginnt der zweite Teil des Tests.' + instr_change + instr2 + '\n\n Wie im vorherigen Durchgang drücken Sie  die Tasten ' + key_pair['always']['descr'] + '.\n' + 
-      "Es folgen erneut zwei Blöcke, getrennt durch eine Pause. Nochmals: im ersten Block wird die Kategorie " +
-      blcks_base[2][0]['categ'] +
-      " getestet, also werden Ihnen nur die damit verbundenen Items präsentiert. " +
-      target_reminder[2] +
-      "\n" + move_on)
 
-    block_info.append(
-      "In diesem letzten Block wird nochmals die Kategorie " +
-      blcks_base[3][0]['categ'] +
-      " getestet. " +
-      target_reminder[3] +
-      " \n\n" + instr_rem2 + "\n" + move_on)
 
 def start_input():
     global subj_id, dems, condition, gender, categories, true_probes, true_forename, true_surname
@@ -194,9 +157,8 @@ def start_input():
     input_box.addField(label=u'VP', tip = 'Ziffern')
     input_box.addText(text=u'')
     input_box.addText(text=u'Bitte ausfüllen:')
-    input_box.addField(label=u'Geschlecht', initial = '', choices=[u'männlich',u'weiblich'] )
+    input_box.addField(label=u'Geschlecht', initial = '', choices=[u'männlich',u'weiblich', u'divers'] )
     input_box.addField(label=u'Alter', tip = 'Ziffern')
-    input_box.addField(label=u'Herkunftsland', initial = '', choices=[u'Österreich',u'Deutschland',u'Schweiz'] )
     input_box.addField(label=u'Händigkeit', initial = '', choices=[u'rechtshändig',u'linkshändig'], tip = '(bevorzugte Hand zum Schreiben)' )
     input_box.addText(text=u'')
     input_box.addText(text=u'Ihr Name:')
@@ -213,25 +175,18 @@ def start_input():
             condition = 99
             print("Condition must be a number!")
         ## CONDITIONS:
-        # 1: guilty, startspeed, forename1st
-        # 2: guilty, startaccuracy, forename1st
-        # 3: guilty, startspeed, surname1st
-        # 4: guilty, startaccuracy, surname1st
-        # 5: innocent, startspeed, forename1st
-        # 6: innocent, startaccuracy, forename1st
-        # 7: innocent, startspeed, surname1st
-        # 8: innocent, startaccuracy, surname1st
-        # 9: guilty, control, forename1st
-        #10: innocent, control, forename1st
-        #11: guilty, control, surname1st
-        #12: innocent, control, surname1st
-        # check if variables correctly given
-        if condition not in range(1,13): # range(1,13):
+        # 1: speed, forename1st
+        # 2: speed, surname1st
+        # 3: accuracy, forename1st
+        # 4: accuracy, surname1st
+        # 5: control, forename1st
+        # 6: control, surname1st
+        if condition not in range(1,7): # range(1,13):
             if testing:
                 condition = 1 # set value for testing to skip Dlg input box
                 print("condition was not set, now set to " + str(condition) + " for testing.")
             else:
-                print("condition was not set correctly (should be 1/2/3/4)")
+                print("condition was not set correctly (should be 1/2/3/4/5/6)")
                 stop = True
         try:
             subj_num = int(input_box.data[1])
@@ -251,8 +206,8 @@ def start_input():
             else:
                 print("age was not set correctly (should be simple number)")
                 stop = True
-        true_forename = input_box.data[6]
-        true_surname = input_box.data[7]
+        true_forename = input_box.data[5]
+        true_surname = input_box.data[6]
         if len(true_forename) < 2:
             print('forename less than 2 chars')
             if testing:
@@ -278,9 +233,11 @@ def start_input():
         subj_id = str(subj_num).zfill(2) + "_" + str(strftime("%Y%m%d%H%M%S", gmtime()))
         if input_box.data[2] == 'weiblich':
             gender = 2
-        else:
+        elif input_box.data[2] == 'männlich':
             gender = 1
-        dems = 'dems/gender/age/country/hand/reps1/rep2/rep3/rep6/drtn/dcit' + '\t' + str(gender) + '/' + str(age)  + '/' + input_box.data[4]  + '/' + input_box.data[5]
+        else:
+            gender = 3
+        dems = 'dems/gender/age/hand/reps1/rep2/rep3/rep6/drtn/dcit' + '\t' + str(gender) + '/' + str(age)  + '/' + input_box.data[4]
 
         categories = ['Vorname', 'Nachname']
         true_probes = {categories[0]: true_forename.lower(),  categories[1]: true_surname.lower() }
@@ -401,8 +358,6 @@ def item_selection():
 
 def trm(raw_inp):
     return [w for w in raw_inp.replace(',', ' ').split(' ') if w != ''][:2]
-def target_check():
-    show_instruction( task_instructions('targetcheck') + '\n\nUm weiterzugehen, drücken Sie die Leertaste.' )
 
 def create_item_base():
     global blcks_base, stims_base, targetrefs, nontargrefs, the_targets, the_main_items, task_probes
@@ -434,9 +389,9 @@ def create_item_base():
     stims_base = deepcopy(stim_base_tmp)
     the_main_items.sort()
     if blocks_order == 0:
-        blcks_base_temp = [ stim_base_tmp[categories[0]], stim_base_tmp[categories[1]],  stim_base_tmp[categories[0]], stim_base_tmp[categories[1]] ]
+        blcks_base_temp = [ stim_base_tmp[categories[0]], stim_base_tmp[categories[1]] ]
     else:
-        blcks_base_temp = [ stim_base_tmp[categories[1]], stim_base_tmp[categories[0]], stim_base_tmp[categories[1]], stim_base_tmp[categories[0]] ]
+        blcks_base_temp = [ stim_base_tmp[categories[1]], stim_base_tmp[categories[0]] ]
     blcks_base = deepcopy(blcks_base_temp)
 
     targetrefs = []
@@ -618,35 +573,26 @@ def basic_variables():
     #    guilt = 1
     #else:
     #    guilt = 0
-    if condition % 2 != 0 and condition <9:
-        instr_order = 'startspeed'
+    if condition <= 2 :
+        instr_order = 'speed'
         crrnt_instr = 'speed'
-    elif condition % 2 == 0 and condition <9:
-        instr_order = 'startaccuracy'
+    elif condition > 2 and condition <= 4:
+        instr_order = 'accuracy'
         crrnt_instr = 'accuracy'
-    elif condition >= 9:
+    elif condition > 4:
         instr_order = 'control'
         crrnt_instr = 'control'
-    if condition in [1,2,5,6,9,10]:  # or in [1,2,5,6,9,10]: // same as: (condition+1) % 4 <= 1
+    if condition in [1,3,5]:
         blocks_order = 0 # forename1st
     else:
         blocks_order = 1 # surname1st
      ## CONDITIONS:
-        # 1: guilty, startspeed, forename1st
-        # 2: guilty, startaccuracy, forename1st
-        # 3: guilty, startspeed, surname1st
-        # 4: guilty, startaccuracy, surname1st
-
-        # not yet:
-        # 5: innocent, startspeed, forename1st
-        # 6: innocent, startaccuracy, forename1st
-        # 7: innocent, startspeed, surname1st
-        # 8: innocent, startaccuracy, surname1st
-
-        # 9: guilty, control, forename1st
-        #10: innocent, control, forename1st
-        #11: guilty, control, surname1st
-        #12: innocent, control, surname1st
+        # 1: speed, forename1st
+        # 2: speed, surname1st
+        # 3: accuracy, forename1st
+        # 4: accuracy, surname1st
+        # 5: control, forename1st
+        # 6: control, surname1st
     block_num = 0
     all_main_rts = { 'probe' : [], 'irrelevant': [] }
     practice_repeated = { 'block1' : 0, 'block2': 0, 'block3': 0}
@@ -657,9 +603,9 @@ def basic_variables():
 # create output file, begin writing, reset parameters
 def create_file():
     global data_out
-    f_name = 'exp_ecit_keys_' + str(condition) + "_" + str(instr_order) + "_" + str(guilt) + "_ord" + str(blocks_order) + "_" + subj_id + '.txt'
+    f_name = 'speed_acc_cit' + str(condition) + "_" + subj_id + '.txt'
     data_out=open(f_name, 'a', encoding='utf-8')
-    data_out.write( '\t'.join( [ "subject_id", "condition", "width", "phase", "block_number", "trial_number", "stimulus_shown", "category", "stim_type", "response_key", "rt_start", "incorrect", "too_slow", "press_duration", "isi", "date_in_ms" ] ) + "\n" )
+    data_out.write( '\t'.join( [ "subject_id", "condition", "phase", "block_number", "trial_number", "stimulus_shown", "category", "stim_type", "response_key", "rt_start", "incorrect", "too_slow", "press_duration", "isi", "date_in_ms" ] ) + "\n" )
     print("File created:", f_name)
 
 def str_if_num( num_val ):
@@ -692,8 +638,12 @@ def draw_labels():
 
 def assign_keys():
     global targetkey, nontargetkey
-    targetkey = key_pair['always']['target']
-    nontargetkey = key_pair['always']['nontarg']
+    if key_assignment == 'rechten':
+        targetkey = key_pair['always']['target']
+        nontargetkey = key_pair['always']['nontarg']
+    else:
+        targetkey = key_pair['always']['nontarg']
+        nontargetkey = key_pair['always']['target']
 
 def next_block():
     global ddline, block_num, rt_data_dict, crrnt_instr, blck_itms, firsttime, crrnt_phase
@@ -707,10 +657,9 @@ def next_block():
                 block_num+=1
             if block_num == 1:
                 blck_itms = inducer_items()
-                ddline = 1.5
+                ddline = main_ddline
             elif block_num == 2:
                 if firsttime:
-                    target_check() # ensures subject payed attention to target items
                     firsttime = False
                 blck_itms = practice_items()
                 ddline = 10
@@ -721,18 +670,10 @@ def next_block():
                 blck_itms = main_items()
         else:
             block_num+=1
-            if block_num == 6:
-                if instr_order == 'startspeed':
-                    crrnt_instr = 'accuracy'
-                elif instr_order == 'startaccuracy':
-                    crrnt_instr = 'speed'
-                elif instr_order == 'control':
-                    crrnt_instr = 'control'
-                assign_keys()
-                blck_itms = main_items()
-            else:
-                blck_itms = main_items()
-        run_block()
+        if testing == True:
+            blck_itms = blck_itms[0:5]
+        while block_num <= 5:
+            run_block()
 
 def practice_eval():
     global rt_data_dict
@@ -758,10 +699,10 @@ def practice_eval():
                 " " +
                 it_type_feed_dict[it_type] +
                 " (" + str( int( corr_ratio // 0.01 ) ) +
-                "% correct)"
+                "% korrekt)"
               )
             if is_valid == False:
-                block_info[block_num] = "Sie müssen diese Übungsrunde wiederholen, da Sie zu wenige richtige Antworten gegeben haben.\n\nSie benötigen mindestens " + str( int(min_ratio*100) ) + "% richtige Antworten für jeden der Antworttypen, jedoch gaben Sie nicht genügend richtige Antworten für folgende(n) Antworttyp(en):" + ", ".join(types_failed) +  ".\n\nBitte geben Sie genaue und im Zeitlimit liegende Antworten.\n\nMachen Sie sich keine Sorgen, wenn Sie diese Übungsrunde mehrmals wiederholen müssen." + move_on
+                block_info[block_num] = "Sie müssen diese Übungsrunde wiederholen, da Sie zu wenige richtige Antworten gegeben haben.\n\nSie benötigen mindestens " + str( int(min_ratio*100) ) + "% richtige Antworten für jeden der Antworttypen, jedoch haben Sie nicht genügend richtige Antworten für folgende(n) Antworttyp(en) gegeben:" + ", ".join(types_failed) +  ".\n\nMachen Sie sich keine Sorgen, wenn Sie diese Übungsrunde mehrmals wiederholen müssen." + move_on
     if is_valid == False:
         practice_repeated['block' + str(block_num)] += 1
     rt_data_dict = {}
@@ -849,9 +790,12 @@ def run_block():
             if (incorrect+tooslow) > 0:
                 first_wrong = True
                 break
+        if block_num > 5:
+            break
         else:
             collect_rts()
-    next_block()
+    while block_num <= 5:
+        next_block()
 
 def collect_rts(): # for practice evaluation & dcit calculation
     global rt_data_dict, all_main_rts, rt_start
