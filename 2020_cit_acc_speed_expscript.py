@@ -22,10 +22,29 @@ isi_min_max = (500, 800)
 instruction_color = '#9999FF'
 ############ MAIN ITEMS - paste from JS
 
+months =  [u"JAN", u"FEB", u"MÄR", u"APR", u"MAI", u"JUN", u"JUL", u"AUG", u"SEP", u"OKT", u"NOV", u"DEZ"]
 
-male_forenames = [u"Nico", u"Justin", u"Jakob", u"Gerald", u"Max", u"Mario", u"Jürgen", u"Ferdinand", u"Simon", u"Harald", u"Andre", u"Gregor", u"Martin", u"Julian", u"Berat", u"Robert", u"Leonard", u"Theodor", u"Arthur", u"Emir", u"Theo", u"Marcel", u"Lorenz", u"Moritz", u"Samuel", u"Stefan", u"Anton", u"Felix", u"Herbert", u"Clemens", u"Gerhard", u"Peter", u"Sascha", u"Richard", u"Günther", u"Ali", u"Johann", u"Nicolas", u"Leo", u"Alexander", u"Emanuel", u"Manfred", u"Klaus", u"Roland", u"Laurenz", u"Valentin", u"Dominik", u"Marvin", u"Helmut", u"Hamza", u"Viktor", u"Jonathan", u"Josef", u"Christoph", u"Markus", u"Pascal", u"Maximilian", u"Finn", u"Mathias", u"Rafael", u"Roman", u"Yusuf", u"Manuel", u"Oliver", u"Rene", u"Karl", u"Adam", u"Christopher", u"Jan", u"Kilian", u"Michael", u"Jonas", u"Werner", u"Kevin", u"David", u"Emil", u"Constantin", u"Noah", u"Bernhard", u"Bernd", u"Georg", u"Marco", u"Florian", u"Franz", u"Fabio", u"Wolfgang", u"Thomas", u"Vincent", u"Christian", u"Andreas", u"Erik", u"Johannes", u"Tobias", u"Benjamin", u"Ben", u"Sandro", u"Armin", u"Daniel", u"Reinhard", u"Benedikt", u"Amir", u"Gernot", u"Elias", u"Gabriel", u"Patrik", u"Andrej", u"Konstantin", u"Oskar", u"Sebastian", u"Matthias", u"Fabian", u"Hannes", u"Paul", u"Leon", u"Tim", u"Leopold", u"Adrian"]
+days31 = ["%.2d" % i for i in range(1,32)]
+days30 = ["%.2d" % i for i in range(1,31)]
+days28 = ["%.2d" % i for i in range(1,29)]
 
-fem_forenames = [u"Sandra", u"Jacqueline", u"Johanna", u"Celine", u"Silvia", u"Ecrin", u"Verena", u"Sofia", u"Sophie", u"Hira", u"Cornelia", u"Valerie", u"Angelina", u"Lina", u"Miriam", u"Petra", u"Natalie", u"Simone", u"Isabella", u"Hanna", u"Emilia", u"Melina", u"Maja", u"Larissa", u"Anja", u"Angelika", u"Patricia", u"Claudia", u"Mia", u"Birgit", u"Astrid", u"Bettina", u"Antonia", u"Jessica", u"Klara", u"Nina", u"Elisabeth", u"Janine", u"Manuela", u"Charlotte", u"Olivia", u"Christina", u"Leonie", u"Katharina", u"Amina", u"Anastasia", u"Bernadette", u"Mila", u"Pia", u"Magdalena", u"Romana", u"Paula", u"Amelie", u"Kerstin", u"Ela", u"Jana", u"Jennifer", u"Lea", u"Susanne", u"Sara", u"Nadine", u"Lara", u"Jasmin", u"Mira", u"Ella", u"Yvonne", u"Marie", u"Theresa", u"Melanie", u"Alma", u"Tanja", u"Alina", u"Martina", u"Denise", u"Rebecca", u"Paulina", u"Franziska", u"Karin", u"Lena", u"Ines", u"Nicole", u"Michelle", u"Viktoria", u"Chiara", u"Bianca", u"Stefanie", u"Carina", u"Linda", u"Azra", u"Stella", u"Nora", u"Flora", u"Vanessa", u"Teresa", u"Sonja", u"Tamara", u"Anna", u"Ana", u"Andrea", u"Melissa", u"Lilly", u"Elif", u"Lisa", u"Clara", u"Teodora", u"Kristina", u"Anita", u"Leonora", u"Silke", u"Emma", u"Esila", u"Daniela", u"Veronika", u"Elena", u"Marina", u"Helena", u"Natascha", u"Elina", u"Carmen", u"Alexandra", u"Eva", u"Barbara", u"Maya", u"Tina", u"Valentina", u"Elisa", u"Sabine", u"Matilda", u"Doris", u"Julia", u"Rosa", u"Laura", u"Annika", u"Nisa", u"Iris", u"Zoe", u"Monika", u"Selina"]
+birthdays_items = []
+
+def birthday_items():
+    for i in range(len(surnms)):
+        month = choice(months)
+        if month in [u"JAN", u"MÄR", u"MAI", u"JUL", u"AUG", u"OKT", u"DEZ"]:
+            day = choice(days31)
+        elif month == u"FEB":
+            day = choice(days28)
+        else:
+            day = choice(days30)
+        date_item = ' '.join([month, str(day)])
+        birthdays_items.append(date_item)
+
+#male_forenames = [u"Nico", u"Justin", u"Jakob", u"Gerald", u"Max", u"Mario", u"Jürgen", u"Ferdinand", u"Simon", u"Harald", u"Andre", u"Gregor", u"Martin", u"Julian", u"Berat", u"Robert", u"Leonard", u"Theodor", u"Arthur", u"Emir", u"Theo", u"Marcel", u"Lorenz", u"Moritz", u"Samuel", u"Stefan", u"Anton", u"Felix", u"Herbert", u"Clemens", u"Gerhard", u"Peter", u"Sascha", u"Richard", u"Günther", u"Ali", u"Johann", u"Nicolas", u"Leo", u"Alexander", u"Emanuel", u"Manfred", u"Klaus", u"Roland", u"Laurenz", u"Valentin", u"Dominik", u"Marvin", u"Helmut", u"Hamza", u"Viktor", u"Jonathan", u"Josef", u"Christoph", u"Markus", u"Pascal", u"Maximilian", u"Finn", u"Mathias", u"Rafael", u"Roman", u"Yusuf", u"Manuel", u"Oliver", u"Rene", u"Karl", u"Adam", u"Christopher", u"Jan", u"Kilian", u"Michael", u"Jonas", u"Werner", u"Kevin", u"David", u"Emil", u"Constantin", u"Noah", u"Bernhard", u"Bernd", u"Georg", u"Marco", u"Florian", u"Franz", u"Fabio", u"Wolfgang", u"Thomas", u"Vincent", u"Christian", u"Andreas", u"Erik", u"Johannes", u"Tobias", u"Benjamin", u"Ben", u"Sandro", u"Armin", u"Daniel", u"Reinhard", u"Benedikt", u"Amir", u"Gernot", u"Elias", u"Gabriel", u"Patrik", u"Andrej", u"Konstantin", u"Oskar", u"Sebastian", u"Matthias", u"Fabian", u"Hannes", u"Paul", u"Leon", u"Tim", u"Leopold", u"Adrian"]
+
+#fem_forenames = [u"Sandra", u"Jacqueline", u"Johanna", u"Celine", u"Silvia", u"Ecrin", u"Verena", u"Sofia", u"Sophie", u"Hira", u"Cornelia", u"Valerie", u"Angelina", u"Lina", u"Miriam", u"Petra", u"Natalie", u"Simone", u"Isabella", u"Hanna", u"Emilia", u"Melina", u"Maja", u"Larissa", u"Anja", u"Angelika", u"Patricia", u"Claudia", u"Mia", u"Birgit", u"Astrid", u"Bettina", u"Antonia", u"Jessica", u"Klara", u"Nina", u"Elisabeth", u"Janine", u"Manuela", u"Charlotte", u"Olivia", u"Christina", u"Leonie", u"Katharina", u"Amina", u"Anastasia", u"Bernadette", u"Mila", u"Pia", u"Magdalena", u"Romana", u"Paula", u"Amelie", u"Kerstin", u"Ela", u"Jana", u"Jennifer", u"Lea", u"Susanne", u"Sara", u"Nadine", u"Lara", u"Jasmin", u"Mira", u"Ella", u"Yvonne", u"Marie", u"Theresa", u"Melanie", u"Alma", u"Tanja", u"Alina", u"Martina", u"Denise", u"Rebecca", u"Paulina", u"Franziska", u"Karin", u"Lena", u"Ines", u"Nicole", u"Michelle", u"Viktoria", u"Chiara", u"Bianca", u"Stefanie", u"Carina", u"Linda", u"Azra", u"Stella", u"Nora", u"Flora", u"Vanessa", u"Teresa", u"Sonja", u"Tamara", u"Anna", u"Ana", u"Andrea", u"Melissa", u"Lilly", u"Elif", u"Lisa", u"Clara", u"Teodora", u"Kristina", u"Anita", u"Leonora", u"Silke", u"Emma", u"Esila", u"Daniela", u"Veronika", u"Elena", u"Marina", u"Helena", u"Natascha", u"Elina", u"Carmen", u"Alexandra", u"Eva", u"Barbara", u"Maya", u"Tina", u"Valentina", u"Elisa", u"Sabine", u"Matilda", u"Doris", u"Julia", u"Rosa", u"Laura", u"Annika", u"Nisa", u"Iris", u"Zoe", u"Monika", u"Selina"]
 
 surnms = [u"Bauer", u"Müllner", u"Langer", u"Petrovic", u"Huber", u"Mayer", u"Lehner", u"Brunner", u"Gruber", u"Pfeiffer", u"Nowak", u"Steiner", u"Tichy", u"Weiß", u"Swoboda", u"Traxler", u"Schmid", u"Urban", u"Holzer", u"Kainz", u"Stadler", u"Auer", u"Wieser", u"Hahn", u"Moser", u"Varga", u"Schuster", u"Leitner", u"Eder", u"Ziegler", u"Wimmer", u"Winkler", u"Schindler", u"Graf", u"Nikolic", u"Reiter", u"Hofer", u"Berger", u"Koch", u"Yilmaz", u"Schwarz", u"Bayer", u"Baumgartner", u"Schmidt", u"Haider", u"Kaufmann", u"Horvath", u"Djordjevic", u"Lechner", u"Maier", u"Todorovic", u"Weiss", u"Lang", u"Bruckner", u"Neumann", u"Wolf", u"Schober", u"Fuchs", u"König", u"Hofbauer", u"Pichler", u"Neubauer", u"Fischer", u"Toth", u"Strobl", u"Wagner", u"Schneider", u"Kraus", u"Vasic", u"Kern", u"Winter", u"Klein", u"Schubert", u"Weber", u"Frank", u"Braun", u"Werner", u"Kaiser", u"Haas", u"Zimmermann", u"Jovanovic", u"Koller", u"Novak", u"Hofmann", u"Richter", u"Binder", u"Seidl", u"Wittmann", u"Böhm", u"Walter", u"Unger", u"Aigner", u"Markovic", u"Wiesinger", u"Windisch", u"Wallner", u"Zach", u"Müller", u"Hoffmann", u"Riedl"]
 
@@ -109,11 +128,11 @@ def task_instructions( whichtext = ''):
     global main_item_info
     keys_info = 'Während des Tests sehen Sie Wörter in der Mitte des Bildschirms auftauchen. Sie müssen jedes Wort entweder mit der linken oder mit der rechten Antworttaste kategorisieren. Diese Tasten sind ' + key_pair['always']['descr'] + '. '
     inducer_info = 'Kategorisieren Sie Ausdrücke, die sich auf Vertrautheit beziehen, mit der ' + key_assignment + ' Taste. Diese Ausdrücke sind: ' + ', '.join(targetref_words).upper() + ' \nAuf der anderen Seite, kategorisieren Sie Ausdrücke, die sich auf Unvertrautheit beziehen, mit der ' + other_key + ' Taste. Diese Ausdrücke sind: ' + ', '.join(nontargref_words).upper()
-    main_item_info = ' Kategorisieren Sie die folgenden Namen als vertraut mit der ' + key_assignment + ' Taste: ' + ', '.join(the_targets).upper() + "\nKategorisieren Sie alle anderen Namen als unvertraut mit der " + other_key + " Taste. (Diese andere Namen sind: " + ', '.join(the_main_items).upper() + ". Zur Erinnerung: Sie leugnen, irgendwelche der anderen Namen als relevant für Sie wahrzunehmen, also drücken Sie für alle diese die linke Taste.)"
+    main_item_info = ' Kategorisieren Sie die folgenden Items als vertraut mit der ' + key_assignment + ' Taste: ' + ', '.join(the_targets).upper() + "\nKategorisieren Sie alle anderen Items als unvertraut mit der " + other_key + " Taste. (Diese andere Items sind: " + ', '.join(the_main_items).upper() + ". Zur Erinnerung: Sie leugnen, irgendwelche der anderen Items als relevant für Sie wahrzunehmen, also drücken Sie für alle diese die linke Taste.)"
     if whichtext == 'firstblock':
         return keys_info + '\n\nEs werden drei kurze Übungsrunden stattfinden. In der ersten Runde müssen Sie Ausdrücke kategorisieren, die mit Vertrautheit zu tun haben. '  + inducer_info
     elif block_num > 1:
-        return  keys_info + inducer_info + '\n\nDie restlichen Items sind Vor- und Nachnamen.' + main_item_info + '\n\nHinweis: achten Sie nur auf die Begriffe die mit der' + key_assignment + ' Taste kategorisiert werden müssen (' + ', '.join(the_targets + list(targetref_words)).upper() + ') und kategorisieren Sie alles andere mit der ' + other_key + ' Taste.'
+        return  keys_info + inducer_info + '\n\nDie restlichen Items sind Nachnamen und Daten.' + main_item_info + '\n\nHinweis: achten Sie nur auf die Begriffe die mit der' + key_assignment + ' Taste kategorisiert werden müssen (' + ', '.join(the_targets + list(targetref_words)).upper() + ') und kategorisieren Sie alles andere mit der ' + other_key + ' Taste.'
     else:
         return  keys_info + inducer_info
 
@@ -122,10 +141,10 @@ def set_block_info():
     move_on = '\n\nUm weiterzugehen, drücken Sie die Leertaste.\n\nFalls nötig, drücken Sie die Taste ENTER (oder eine der Pfeiltasten) um die vollständigen Anweisungen erneut zu lesen.'
     block_info = [""]
     target_reminder = [
-        "Zur Erinnerung: der als vertraut zu kategorisierende Name ist " +
+        "Zur Erinnerung: das als vertraut zu kategorisierende Item ist " +
         blcks_base[0][1]['word'].upper() +
         ". ",
-        "Zur Erinnerung: der als vertraut zu kategorisierende Name ist " +
+        "Zur Erinnerung: das als vertraut zu kategorisierende Item ist " +
         blcks_base[1][1]['word'].upper() +
         ". "
       ]
@@ -136,7 +155,7 @@ def set_block_info():
 
     block_info.append('Sie haben die zweite Übungsrunde geschafft. Nun folgt die dritte und letzte Übungsrunde. In dieser dritten Übungsrunde wird die Antwortzeit verkürzt sein. Eine bestimmte Anzahl an falschen Antworten ist aber erlaubt. Die Wörter (Angaben) "unvertraut", "vertraut" werden nicht mehr angezeigt, die Aufgabe bleibt jedoch dieselbe. Es werden nun sowohl die Ausdrück aus der ersten Übungsrunde als auch die Kategorie ' + blcks_base[0][0]['categ']+ ' aus der zweiten Übungsrunde gezeigt.\n\n ' + move_on)
 
-    block_info.append("Gut gemacht. Nun beginnt der eigentliche Test." + instruction_pair[crrnt_instr] + " Die Aufgabe bleibt dieselbe. Es wird zwei Blöcke, getrennt durch eine Pause, geben. Im ersten Block wird die Kategorie " +
+    block_info.append("Gut gemacht. Nun beginnt der eigentliche Test. " + instruction_pair[crrnt_instr] + " Die Aufgabe bleibt dieselbe. Es wird zwei Blöcke, getrennt durch eine Pause, geben. Im ersten Block wird die Kategorie " +
       blcks_base[0][0]['categ'] +  " getestet, also werden Ihnen nur die damit verbundenen Items präsentiert. " +
       target_reminder[0] + "\n" + move_on)
 
@@ -150,7 +169,7 @@ def set_block_info():
 
 
 def start_input():
-    global subj_id, dems, condition, gender, categories, true_probes, true_forename, true_surname
+    global subj_id, dems, condition, gender, categories, true_probes, true_forename, true_surname, true_birthday
     input_box = Dlg(title=u'Grunddaten', labelButtonOK=u'OK', labelButtonCancel=u'Abbrechen')
     input_box.addText(text=u'')
     input_box.addField(label=u'c.', tip = '1-12')
@@ -158,6 +177,8 @@ def start_input():
     input_box.addText(text=u'')
     input_box.addText(text=u'Bitte ausfüllen:')
     input_box.addField(label=u'Geschlecht', initial = '', choices=[u'männlich',u'weiblich', u'divers'] )
+    input_box.addField(label=u'Geburtstag', initial ='Monat', choices=[u'JAN', u'FEB', u'MÄR', u'APR', u'MAI', u'JUN', u'JUL', u'AUG', u'SEP', u'OKT', u'NOV', u'DEZ'])
+    input_box.addField(label = '', initial = '', choices=["%.2d" % i for i in range(1,32)])
     input_box.addField(label=u'Alter', tip = 'Ziffern')
     input_box.addField(label=u'Händigkeit', initial = '', choices=[u'rechtshändig',u'linkshändig'], tip = '(bevorzugte Hand zum Schreiben)' )
     input_box.addText(text=u'')
@@ -198,7 +219,7 @@ def start_input():
                 print("vp (subject number) was not set correctly (should be simple number)")
                 stop = True
         try:
-            age = int(input_box.data[3])
+            age = int(input_box.data[5])
         except ValueError:
             if testing:
                 age = 11 # set value for testing to skip Dlg input box
@@ -206,8 +227,8 @@ def start_input():
             else:
                 print("age was not set correctly (should be simple number)")
                 stop = True
-        true_forename = input_box.data[5]
-        true_surname = input_box.data[6]
+        true_forename = input_box.data[7]
+        true_surname = input_box.data[8]
         if len(true_forename) < 2:
             print('forename less than 2 chars')
             if testing:
@@ -237,10 +258,13 @@ def start_input():
             gender = 1
         else:
             gender = 3
-        dems = 'dems/gender/age/hand/reps1/rep2/rep3/rep6/drtn/dcit' + '\t' + str(gender) + '/' + str(age)  + '/' + input_box.data[4]
+        true_birthdaymonth = input_box.data[3] 
+        true_birthdayday = input_box.data[4]
+        true_birthday = ' '.join([true_birthdaymonth, str(true_birthdayday)])
+        dems = 'dems/gender/age/hand/reps1/rep2/rep3/rep6/drtn/dcit' + '\t' + str(gender) + '/' + str(age)  + '/' + input_box.data[6]
 
-        categories = ['Vorname', 'Nachname']
-        true_probes = {categories[0]: true_forename.lower(),  categories[1]: true_surname.lower() }
+        categories = ['Geburtstag', 'Nachname']
+        true_probes = {categories[0]: true_birthday.lower(),  categories[1]: true_surname.lower() }
         confirm_dlg()
     else:
         quit()
@@ -248,7 +272,7 @@ def start_input():
 def confirm_dlg():
     global start_date
     confirm_input = Dlg(title=u'Confirmation', labelButtonOK=u'JA', labelButtonCancel=u'Nein')
-    input_feed = u'Bitte bestätigen Sie, dass Ihr Vor- und Nachname richtig geschrieben wird: ' + true_forename.upper() + ' ' + true_surname.upper()
+    input_feed = u'Bitte bestätigen Sie, dass Ihr Vor- und Nachname richtig geschrieben wird und Ihr Geburtstag korrekt ist:\n\n ' + true_forename.upper() + ' ' + true_surname.upper() + '\n\n' + true_birthday.upper()
     confirm_input.addText(text='')
     confirm_input.addText(text=input_feed)
     confirm_input.addText(text='')
@@ -261,10 +285,7 @@ def confirm_dlg():
 noneword = 'Keine'
 def prune():
     global items_to_filt
-    if gender == 1:
-        forenames = male_forenames
-    else:
-        forenames = fem_forenames
+    forenames = birthdays_items
     forenames = [fn.lower() for fn in forenames]
     forenames.sort()
     surnames = [sn.lower() for sn in surnms]
@@ -567,6 +588,7 @@ def diginto_dict(dct, indx, key_name, min_dstnc):
 
 def basic_variables():
     global stopwatch, blocks_order, instr_order, guilt, block_num, all_main_rts, kb_device, crrnt_instr, practice_repeated, firsttime
+    birthday_items()
     stopwatch = Clock()
     guilt = 1 # always guilty
     #if condition in [5,6,7,8,10,12]:
@@ -582,7 +604,7 @@ def basic_variables():
     elif condition > 4:
         instr_order = 'control'
         crrnt_instr = 'control'
-    if condition in [1,3,5]:
+    if condition in [1,3,5]: 
         blocks_order = 0 # forename1st
     else:
         blocks_order = 1 # surname1st
@@ -616,7 +638,7 @@ def str_if_num( num_val ):
 
 def add_resp():
     global incorrect, tooslow
-    data_out.write( '\t'.join( [ subj_id, str(condition), crrnt_instr, crrnt_phase, str(block_num), str(trial_num+1), stim_text, stim_current["categ"], stim_type, resp_key, str_if_num(rt_start), str(incorrect), str(tooslow), str_if_num(press_dur), str_if_num( isi_min_max[0]/1000 + isi_delay ), str(strftime("%Y%m%d%H%M%S", gmtime())) ] ) + '\n' )
+    data_out.write( '\t'.join( [ subj_id, str(condition), crrnt_phase, str(block_num), str(trial_num+1), stim_text, stim_current["categ"], stim_type, resp_key, str_if_num(rt_start), str(incorrect), str(tooslow), str_if_num(press_dur), str_if_num( isi_min_max[0]/1000 + isi_delay ), str(strftime("%Y%m%d%H%M%S", gmtime())) ] ) + '\n' )
     print("resp key:", resp_key, "for stim:", stim_text, "incorrect:", incorrect, "rt_start:", rt_start)
 
 def start_with_space():
