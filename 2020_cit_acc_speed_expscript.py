@@ -40,7 +40,8 @@ def birthday_items():
         else:
             day = choice(days30)
         date_item = ' '.join([month, str(day)])
-        birthdays_items.append(date_item)
+        if date_item != true_birthday:
+            birthdays_items.append(date_item)
 
 #male_forenames = [u"Nico", u"Justin", u"Jakob", u"Gerald", u"Max", u"Mario", u"Jürgen", u"Ferdinand", u"Simon", u"Harald", u"Andre", u"Gregor", u"Martin", u"Julian", u"Berat", u"Robert", u"Leonard", u"Theodor", u"Arthur", u"Emir", u"Theo", u"Marcel", u"Lorenz", u"Moritz", u"Samuel", u"Stefan", u"Anton", u"Felix", u"Herbert", u"Clemens", u"Gerhard", u"Peter", u"Sascha", u"Richard", u"Günther", u"Ali", u"Johann", u"Nicolas", u"Leo", u"Alexander", u"Emanuel", u"Manfred", u"Klaus", u"Roland", u"Laurenz", u"Valentin", u"Dominik", u"Marvin", u"Helmut", u"Hamza", u"Viktor", u"Jonathan", u"Josef", u"Christoph", u"Markus", u"Pascal", u"Maximilian", u"Finn", u"Mathias", u"Rafael", u"Roman", u"Yusuf", u"Manuel", u"Oliver", u"Rene", u"Karl", u"Adam", u"Christopher", u"Jan", u"Kilian", u"Michael", u"Jonas", u"Werner", u"Kevin", u"David", u"Emil", u"Constantin", u"Noah", u"Bernhard", u"Bernd", u"Georg", u"Marco", u"Florian", u"Franz", u"Fabio", u"Wolfgang", u"Thomas", u"Vincent", u"Christian", u"Andreas", u"Erik", u"Johannes", u"Tobias", u"Benjamin", u"Ben", u"Sandro", u"Armin", u"Daniel", u"Reinhard", u"Benedikt", u"Amir", u"Gernot", u"Elias", u"Gabriel", u"Patrik", u"Andrej", u"Konstantin", u"Oskar", u"Sebastian", u"Matthias", u"Fabian", u"Hannes", u"Paul", u"Leon", u"Tim", u"Leopold", u"Adrian"]
 
