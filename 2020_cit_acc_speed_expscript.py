@@ -22,26 +22,7 @@ isi_min_max = (500, 800)
 instruction_color = '#9999FF'
 ############ MAIN ITEMS - paste from JS
 
-months =  [u"JAN", u"FEB", u"MÄR", u"APR", u"MAI", u"JUN", u"JUL", u"AUG", u"SEP", u"OKT", u"NOV", u"DEZ"]
-
-days31 = ["%.2d" % i for i in range(1,32)]
-days30 = ["%.2d" % i for i in range(1,31)]
-days28 = ["%.2d" % i for i in range(1,29)]
-
-birthdays_items = []
-
-def birthday_items():
-    for i in range(len(surnms)):
-        month = choice(months)
-        if month in [u"JAN", u"MÄR", u"MAI", u"JUL", u"AUG", u"OKT", u"DEZ"]:
-            day = choice(days31)
-        elif month == u"FEB":
-            day = choice(days28)
-        else:
-            day = choice(days30)
-        date_item = ' '.join([month, str(day)])
-        if date_item != true_birthday:
-            birthdays_items.append(date_item)
+birthdays_items =  [u"FEB 25", u"APR 17", u"MAI 21", u"JUL 12", u"SEP 27", u"OKT 06", u"NOV 08", u"DEZ 19"]
 
 #male_forenames = [u"Nico", u"Justin", u"Jakob", u"Gerald", u"Max", u"Mario", u"Jürgen", u"Ferdinand", u"Simon", u"Harald", u"Andre", u"Gregor", u"Martin", u"Julian", u"Berat", u"Robert", u"Leonard", u"Theodor", u"Arthur", u"Emir", u"Theo", u"Marcel", u"Lorenz", u"Moritz", u"Samuel", u"Stefan", u"Anton", u"Felix", u"Herbert", u"Clemens", u"Gerhard", u"Peter", u"Sascha", u"Richard", u"Günther", u"Ali", u"Johann", u"Nicolas", u"Leo", u"Alexander", u"Emanuel", u"Manfred", u"Klaus", u"Roland", u"Laurenz", u"Valentin", u"Dominik", u"Marvin", u"Helmut", u"Hamza", u"Viktor", u"Jonathan", u"Josef", u"Christoph", u"Markus", u"Pascal", u"Maximilian", u"Finn", u"Mathias", u"Rafael", u"Roman", u"Yusuf", u"Manuel", u"Oliver", u"Rene", u"Karl", u"Adam", u"Christopher", u"Jan", u"Kilian", u"Michael", u"Jonas", u"Werner", u"Kevin", u"David", u"Emil", u"Constantin", u"Noah", u"Bernhard", u"Bernd", u"Georg", u"Marco", u"Florian", u"Franz", u"Fabio", u"Wolfgang", u"Thomas", u"Vincent", u"Christian", u"Andreas", u"Erik", u"Johannes", u"Tobias", u"Benjamin", u"Ben", u"Sandro", u"Armin", u"Daniel", u"Reinhard", u"Benedikt", u"Amir", u"Gernot", u"Elias", u"Gabriel", u"Patrik", u"Andrej", u"Konstantin", u"Oskar", u"Sebastian", u"Matthias", u"Fabian", u"Hannes", u"Paul", u"Leon", u"Tim", u"Leopold", u"Adrian"]
 
