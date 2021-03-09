@@ -259,12 +259,12 @@ def start_input():
             gender = 1
         else:
             gender = 3
-        true_birthdaymonth = input_box.data[3] 
+        true_birthdaymonth = input_box.data[3]
         true_birthdayday = input_box.data[4]
         true_birthday = ' '.join([true_birthdaymonth, str(true_birthdayday)])
         dems = 'dems/gender/age/hand/reps1/rep2/rep3/rep6/drtn/dcit' + '\t' + str(gender) + '/' + str(age)  + '/' + input_box.data[6]
 
-        categories = ['Geburtstag', 'Nachname']
+        categories = ['Datum', 'Nachname']
         true_probes = {categories[0]: true_birthday.lower(),  categories[1]: true_surname.lower() }
         confirm_dlg()
     else:
@@ -286,15 +286,15 @@ def confirm_dlg():
 noneword = 'Keine'
 def prune():
     global items_to_filt
-    forenames = birthdays_items
-    forenames = [fn.lower() for fn in forenames]
-    forenames.sort()
+    birthdays = birthdays_items
+    birthdays = [bd.lower() for bd in birthdays]
+    birthdays.sort()
     surnames = [sn.lower() for sn in surnms]
     surnames.sort()
     item_base_temp = {}
     for cat_ind, categ in enumerate(categories):
         probe = true_probes[categ]
-        container = [forenames, surnames][cat_ind]
+        container = [birthdays, surnames][cat_ind]
         final8 = [probe]
         maxdif = 0
         container = [ elm for elm in container if elm[0] != probe[0] ]
@@ -311,7 +311,7 @@ def prune():
 def item_selection():
     global w_selected
     prune()
-    selection_instr = TextStim(win, text = 'Sehen Sie sich die untenstehende Liste an und wählen Sie in jeder Kategorie (Vor- und Nachnamen) maximal zwei Elemente aus, die für Sie persönlich wichtig oder sinnvoll erscheinen oder die sich in irgendeiner Weise von den übrigen Namen unterscheiden: zum Beispiel der Name eines Freundes oder einer Ihnen bekannten Person. Wenn sich in einer bestimmten Kategorie keine solchen Namen befinden, wählen Sie einfach "Keine" aus. Sie können wählen (oder die Wahl aufheben), indem Sie auf den Namen klicken.', color=instruction_color, pos=(0,230), wrapWidth=1150, height = 30)
+    selection_instr = TextStim(win, text = 'Sehen Sie sich die untenstehende Liste an und wählen Sie in jeder Kategorie (Datum und Nachname) maximal zwei Elemente aus, die für Sie persönlich wichtig oder sinnvoll erscheinen oder die sich in irgendeiner Weise von den übrigen Elementen unterscheiden: zum Beispiel der Name oder der Geburtstag eines Freundes oder einer Ihnen bekannten Person. Wenn sich in einer bestimmten Kategorie keine solchen Elemente befinden, wählen Sie einfach "Keine" aus. Sie können wählen (oder die Wahl aufheben), indem Sie auf den Namen klicken.', color=instruction_color, pos=(0,230), wrapWidth=1150, height = 30)
     ok_button = TextStim(win, text = 'OK', bold = True, color=instruction_color, pos=(250,-290), height = 30)
     maus = Mouse()
     textstim_dicts = {}
@@ -605,7 +605,7 @@ def basic_variables():
     elif condition > 4:
         instr_order = 'control'
         crrnt_instr = 'control'
-    if condition in [1,3,5]: 
+    if condition in [1,3,5]:
         blocks_order = 0 # forename1st
     else:
         blocks_order = 1 # surname1st
