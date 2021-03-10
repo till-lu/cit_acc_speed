@@ -408,11 +408,7 @@ def main_items():
     global blcks_base, crrnt_phase
     print('main_items()')
     crrnt_phase = 'main'
-    print('here is blcks_base BEFORE pop')
-    print(blcks_base)
     block_stim_base = blcks_base.pop(0)
-    print('here is blcks_base AFTER pop')
-    print(blcks_base)
     main_stims = add_inducers(block_stim_base)
     return [dct for sublist in main_stims for dct in sublist] # flatten
 
@@ -660,24 +656,21 @@ def next_block():
         if block_num == 0:
             rt_data_dict = {}
             assign_keys()
-        if ( block_num in (0, 1, 2, 3) ):
-            if block_num == 0 or practice_eval():
-                block_num+=1
-            if block_num == 1:
-                blck_itms = inducer_items()
-                ddline = main_ddline
-            elif block_num == 2:
-                if firsttime:
-                    firsttime = False
-                blck_itms = practice_items()
-                ddline = 10
-            elif block_num == 3:
-                blck_itms = practice_items()
-                ddline = main_ddline
-            else:
-                blck_itms = main_items()
-        else:
+        if block_num in [0, 4, 5] or practice_eval():
             block_num+=1
+        if block_num == 1:
+            blck_itms = inducer_items()
+            ddline = main_ddline
+        elif block_num == 2:
+            if firsttime:
+                firsttime = False
+            blck_itms = practice_items()
+            ddline = 10
+        elif block_num == 3:
+            blck_itms = practice_items()
+            ddline = main_ddline
+        else:
+            blck_itms = main_items()
         if testing == True:
             blck_itms = blck_itms[0:5]
         while block_num <= 5:
