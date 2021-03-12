@@ -408,11 +408,7 @@ def main_items():
     global blcks_base, crrnt_phase
     print('main_items()')
     crrnt_phase = 'main'
-    print('here is blcks_base BEFORE pop')
-    print(blcks_base)
     block_stim_base = blcks_base.pop(0)
-    print('here is blcks_base AFTER pop')
-    print(blcks_base)
     main_stims = add_inducers(block_stim_base)
     return [dct for sublist in main_stims for dct in sublist] # flatten
 
