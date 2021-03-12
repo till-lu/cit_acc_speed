@@ -655,7 +655,8 @@ def next_block():
         if block_num == 0:
             rt_data_dict = {}
             assign_keys()
-        block_num+=1
+        if block_num in [0,4,5] or practice_eval():
+            block_num+=1
         if block_num == 1:
             blck_itms = inducer_items()
             ddline = main_ddline
@@ -671,7 +672,6 @@ def next_block():
             blck_itms = main_items()
         if testing == True:
             blck_itms = blck_itms[0:5]
-    while block_num <= 5:
         run_block()
 
 
@@ -794,10 +794,7 @@ def run_block():
             break
         else:
             collect_rts()
-    while block_num <= 4:
-        next_block()
-    if block_num == 5:
-        block_num+=1
+    next_block()
 
 def collect_rts(): # for practice evaluation & dcit calculation
     global rt_data_dict, all_main_rts, rt_start
