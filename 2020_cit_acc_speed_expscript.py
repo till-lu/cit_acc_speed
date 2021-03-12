@@ -15,7 +15,7 @@ from datetime import datetime
 from itertools import permutations
 
 ## for testing
-testing = True # True for testing, False for real recording
+testing = False # True for testing, False for real recording
 ###
 main_ddline = 1 # sec
 isi_min_max = (500, 800)
@@ -80,7 +80,7 @@ def execute():
 
 def ending():
     full_duration = round( ( datetime.now() - start_date ).total_seconds()/60, 2)
-    info = 'Danke für die Teilnahme. Wenn Sie möchten, können Sie gehen, aber bitte seien Sie leise dabei.\n\nKurze Information über den Test:\n\nIn dieser Studie versuchen wir, Ihre wirklichen selbstbezogenen Details (z.B. Ihren tatsächlichen Vornamen) von solchen zu unterscheiden, die Ihnen nicht zugehörig sind (z.B. andere Vornamen). Ziel dieses Tests ist es, anhand von Reaktionszeiten herauszufinden, wenn eine Person versucht, bestimmte Daten zu verschleiern bzw. zu verheimlichen. Dies geschieht auf Basis der Vermutung, dass Reaktionszeiten für die Ihnen präsentierten eigenen Namen langsamer ausfallen, als im Falle anderer Namen. Hauptanliegen dieser Studie ist es, zu zeigen, ob dies besser mit der Aufforderung zu einer möglichst schnellen Reaktion oder zu einer möglichst genauen Reaktion funktioniert.\n\nFür weitere Informationen wenden Sie sich bitte an den Versuchsleiter (oder schreiben Sie eine E-mail an Gaspar Lukacs).'
+    info = 'Danke für die Teilnahme. Wenn Sie möchten, können Sie gehen, aber bitte seien Sie leise dabei.\n\nKurze Information über den Test:\n\nIn dieser Studie versuchen wir, Ihre wirklichen selbstbezogenen Details (z.B. Ihren tatsächlichen Nachnamen) von solchen zu unterscheiden, die Ihnen nicht zugehörig sind (z.B. andere Nachnamen). Ziel dieses Tests ist es, anhand von Reaktionszeiten herauszufinden, wenn eine Person versucht, bestimmte Daten zu verschleiern bzw. zu verheimlichen. Dies geschieht auf Basis der Vermutung, dass Reaktionszeiten für die Ihnen präsentierten selbstbezogenen Details langsamer ausfallen, als im Falle anderer Namen oder Daten. Hauptanliegen dieser Studie ist es, zu zeigen, ob dies besser mit der Aufforderung zu einer möglichst schnellen Reaktion oder zu einer möglichst genauen Reaktion funktioniert.\n\nFür weitere Informationen wenden Sie sich bitte an den Versuchsleiter (oder schreiben Sie eine E-mail an Gaspar Lukacs).'
 
     data_out.write(dems + "/" +
       "/".join( [ str(nmbr) for nmbr in
@@ -243,7 +243,7 @@ def start_input():
         true_birthdaymonth = input_box.data[3]
         true_birthdayday = input_box.data[4]
         true_birthday = ' '.join([true_birthdaymonth, str(true_birthdayday)])
-        dems = 'dems/gender/age/hand/reps1/rep2/rep3/rep6/drtn/dcit' + '\t' + str(gender) + '/' + str(age)  + '/' + input_box.data[6]
+        dems = 'dems/gender/age/hand/reps1/rep2/rep3/drtn' + '\t' + str(gender) + '/' + str(age)  + '/' + input_box.data[6]
 
         categories = ['Datum', 'Nachname']
         true_probes = {categories[0]: true_birthday.lower(),  categories[1]: true_surname.lower() }
@@ -279,7 +279,7 @@ def prune():
         final8 = [probe]
         maxdif = 0
         container = [ elm for elm in container if elm[0] != probe[0] ]
-        while len(final8) < 9 and maxdif < 99:
+        while len(final8) < 8  and maxdif < 99:
             temps = [ elm for elm in container if abs(len(probe)-len(elm)) <= maxdif ]
             if len(temps) > 0:
                 final8.append( choice(temps) )
@@ -408,7 +408,11 @@ def main_items():
     global blcks_base, crrnt_phase
     print('main_items()')
     crrnt_phase = 'main'
+    print('here is blcks_base BEFORE pop')
+    print(blcks_base)
     block_stim_base = blcks_base.pop(0)
+    print('here is blcks_base AFTER pop')
+    print(blcks_base)
     main_stims = add_inducers(block_stim_base)
     return [dct for sublist in main_stims for dct in sublist] # flatten
 
@@ -570,7 +574,6 @@ def diginto_dict(dct, indx, key_name, min_dstnc):
 
 def basic_variables():
     global stopwatch, blocks_order, instr_order, guilt, block_num, all_main_rts, kb_device, crrnt_instr, practice_repeated, firsttime
-    birthday_items()
     stopwatch = Clock()
     guilt = 1 # always guilty
     #if condition in [5,6,7,8,10,12]:
@@ -656,8 +659,7 @@ def next_block():
         if block_num == 0:
             rt_data_dict = {}
             assign_keys()
-        if block_num in [0, 4, 5] or practice_eval():
-            block_num+=1
+        block_num+=1
         if block_num == 1:
             blck_itms = inducer_items()
             ddline = main_ddline
@@ -673,8 +675,9 @@ def next_block():
             blck_itms = main_items()
         if testing == True:
             blck_itms = blck_itms[0:5]
-        while block_num <= 5:
-            run_block()
+    while block_num <= 5:
+        run_block()
+
 
 def practice_eval():
     global rt_data_dict
@@ -795,8 +798,10 @@ def run_block():
             break
         else:
             collect_rts()
-    while block_num <= 5:
+    while block_num <= 4:
         next_block()
+    if block_num == 5:
+        block_num+=1
 
 def collect_rts(): # for practice evaluation & dcit calculation
     global rt_data_dict, all_main_rts, rt_start
