@@ -110,7 +110,7 @@ def task_instructions( whichtext = ''):
     global main_item_info
     keys_info = 'Während des Tests sehen Sie Wörter in der Mitte des Bildschirms auftauchen. Sie müssen jedes Wort entweder mit der linken oder mit der rechten Antworttaste kategorisieren. Diese Tasten sind ' + key_pair['always']['descr'] + '. '
     inducer_info = 'Kategorisieren Sie Ausdrücke, die sich auf Vertrautheit beziehen, mit der ' + key_assignment + ' Taste. Diese Ausdrücke sind: ' + ', '.join(targetref_words).upper() + ' \nAuf der anderen Seite, kategorisieren Sie Ausdrücke, die sich auf Unvertrautheit beziehen, mit der ' + other_key + ' Taste. Diese Ausdrücke sind: ' + ', '.join(nontargref_words).upper()
-    main_item_info = ' Kategorisieren Sie die folgenden Items als vertraut mit der ' + key_assignment + ' Taste: ' + ', '.join(the_targets).upper() + "\nKategorisieren Sie alle anderen Items als unvertraut mit der " + other_key + " Taste. (Diese andere Items sind: " + ', '.join(the_main_items).upper() + ". Zur Erinnerung: Sie leugnen, irgendwelche der anderen Items als relevant für Sie wahrzunehmen, also drücken Sie für alle diese die linke Taste.)"
+    main_item_info = ' Kategorisieren Sie die folgenden Items als vertraut mit der ' + key_assignment + ' Taste: ' + ', '.join(the_targets).upper() + "\nKategorisieren Sie alle anderen Items als unvertraut mit der " + other_key + " Taste. (Diese andere Items sind: " + ', '.join(the_main_items).upper() + ". - Sie leugnen, irgendwelche der anderen Items als relevant für Sie wahrzunehmen, also drücken Sie für alle diese die linke Taste.)"
     if whichtext == 'firstblock':
         return keys_info + '\n\nEs werden drei kurze Übungsrunden stattfinden. In der ersten Runde müssen Sie Ausdrücke kategorisieren, die mit Vertrautheit zu tun haben. '  + inducer_info
     elif block_num > 1:
@@ -133,7 +133,7 @@ def set_block_info():
 
     block_info.append( task_instructions('firstblock') + '\n\nUm weiterzugehen, drücken Sie die Leertaste.')
 
-    block_info.append('Es folgt die zweite Übungsrunde. Es werden im Folgenden weitere Items hinzukommen:' + main_item_info + '\n\nUm sicherzustellen, dass Sie Ihre jeweiligen Antworten richtig kategorisieren, werden Sie für diese Aufgabe genügend Zeit haben. Sie müssen auf jedes Item korrekt antworten. Wählen Sie eine nicht korrekte Antwort (oder geben keine Antwort für mehr als 10 Sekunden ein), müssen Sie diese Übungsrunde wiederholen. \n\nZunächst wird die Kategorie ' + blcks_base[0][0]['categ'] +  " getestet, daher werden Ihnen auch in dieser Übungsrunde nur die damit verbundenen Items präsentiert. " + target_reminder[0] + move_on)
+    block_info.append('Es folgt die zweite Übungsrunde. Es werden im Folgenden weitere Items hinzukommen:' + main_item_info + '\nUm sicherzustellen, dass Sie Ihre jeweiligen Antworten richtig kategorisieren, werden Sie in dieser Übungsrunde genügend Zeit haben. Sie müssen auf jedes Item korrekt antworten. Wählen Sie eine nicht korrekte Antwort (oder geben keine Antwort für mehr als 10 Sekunden ein), müssen Sie diese Übungsrunde wiederholen. \nZunächst wird die Kategorie ' + blcks_base[0][0]['categ'] +  " getestet, daher werden Ihnen auch in dieser Übungsrunde nur die damit verbundenen Items präsentiert. " + target_reminder[0] + move_on)
 
     block_info.append('Sie haben die zweite Übungsrunde geschafft. Nun folgt die dritte und letzte Übungsrunde. In dieser dritten Übungsrunde wird die Antwortzeit verkürzt sein. Eine bestimmte Anzahl an falschen Antworten ist aber erlaubt. Die Wörter (Angaben) "unvertraut", "vertraut" werden nicht mehr angezeigt, die Aufgabe bleibt jedoch dieselbe. Es werden nun sowohl die Ausdrück aus der ersten Übungsrunde als auch die Kategorie ' + blcks_base[0][0]['categ']+ ' aus der zweiten Übungsrunde gezeigt.\n\n ' + move_on)
 
@@ -254,7 +254,7 @@ def start_input():
 def confirm_dlg():
     global start_date
     confirm_input = Dlg(title=u'Confirmation', labelButtonOK=u'JA', labelButtonCancel=u'Nein')
-    input_feed = u'Bitte bestätigen Sie, dass Ihr Vor- und Nachname richtig geschrieben wird und Ihr Geburtstag korrekt ist:\n\n ' + true_forename.upper() + ' ' + true_surname.upper() + '\n\n' + true_birthday.upper()
+    input_feed = u'Bitte bestätigen Sie, dass Ihr Vor- und Nachname richtig geschrieben wird und Ihr Geburtstag (Format "Monat TT") korrekt ist:\n\n ' + true_forename.upper() + ' ' + true_surname.upper() + '\n\n' + true_birthday.upper()
     confirm_input.addText(text='')
     confirm_input.addText(text=input_feed)
     confirm_input.addText(text='')
