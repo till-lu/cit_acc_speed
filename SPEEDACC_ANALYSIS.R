@@ -70,6 +70,16 @@ for (file_name in enum(filenames)) {
     ers
   )
 }
+
+# subjects_merged$rt_mean_diffs_0 = subjects_merged$rt_mean_probe_0 - subjects_merged$rt_mean_irrelevant_0
+# subjects_merged$rt_mean_diffs_1 = subjects_merged$rt_mean_probe_1 - subjects_merged$rt_mean_irrelevant_1
+# 
+# subjects_merged$acc_rate_diffs_0 = subjects_merged$acc_rate_probe_0 - subjects_merged$acc_rate_irrelevant_0
+# subjects_merged$acc_rate_diffs_1 = subjects_merged$acc_rate_probe_1 - subjects_merged$acc_rate_irrelevant_1
+# 
+# subjects_merged$dur_mean_diffs_0 = subjects_merged$dur_mean_probe_0 - subjects_merged$dur_mean_irrelevant_0
+# subjects_merged$dur_mean_diffs_1 = subjects_merged$dur_mean_probe_1 - subjects_merged$dur_mean_irrelevant_1
+
   
 # plus statistcs etc.
 
@@ -81,5 +91,4 @@ for (file_name in enum(filenames)) {
 #anova_neat() through conditions
 
 #t_neat()
-
 
