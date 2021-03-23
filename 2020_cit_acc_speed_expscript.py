@@ -43,9 +43,9 @@ if key_assignment == 'rechten':
 else:
     other_key = 'rechten'
 
-instruction_pair = { 'speed' : 'Versuchen Sie, so SCHNELL wie möglich zu antworten und so wenig Zeit wie möglich bis zu der Reaktion auf die gezeigten Wörter verstreichen zu lassen. Achten Sie also auf Geschwindigkeit und drücken Sie die Antworttaste so schnell wie es Ihnen möglich ist.', 'accuracy' : 'Versuchen Sie, so GENAU wie möglich zu antworten und bei der Reaktion auf die gezeigten Wörter so wenig Fehler wie möglich zu machen. Achten Sie also auf Genauigkeit und darauf, dass Sie immer die korrekte Antworttaste drücken.', 'control' : ' '}
+instruction_pair = { 'speed' : 'Versuchen Sie, so SCHNELL wie möglich zu antworten und so wenig Zeit wie möglich bis zu der Reaktion auf die gezeigten Wörter verstreichen zu lassen. Achten Sie also auf Geschwindigkeit und drücken Sie die Antworttaste so schnell wie es Ihnen möglich ist.', 'accuracy' : 'Versuchen Sie, so GENAU wie möglich zu antworten und bei der Reaktion auf die gezeigten Wörter so wenig Fehler wie möglich zu machen. Achten Sie also auf Genauigkeit und darauf, dass Sie immer die korrekte Antworttaste drücken.', 'control' : ''}
 
-instruction_reminder = { 'speed' : 'Achten Sie weiterhin auf Geschwindigkeit und antworten Sie so schnell wie es Ihnen möglich ist.', 'accuracy' : 'Achten Sie weiterhin auf Genauigkeit und drücken Sie stets die korrekte Antworttaste.', 'control' : ' '}
+instruction_reminder = { 'speed' : 'Achten Sie weiterhin auf Geschwindigkeit und antworten Sie so schnell wie es Ihnen möglich ist.', 'accuracy' : 'Achten Sie weiterhin auf Genauigkeit und drücken Sie stets die korrekte Antworttaste.', 'control' : ''}
 
 
 if testing:
@@ -80,7 +80,7 @@ def execute():
 
 def ending():
     full_duration = round( ( datetime.now() - start_date ).total_seconds()/60, 2)
-    info = 'Danke für die Teilnahme. Wenn Sie möchten, können Sie gehen, aber bitte seien Sie leise dabei.\n\nKurze Information über den Test:\n\nIn dieser Studie versuchen wir, Ihre wirklichen selbstbezogenen Details (z.B. Ihren tatsächlichen Nachnamen) von solchen zu unterscheiden, die Ihnen nicht zugehörig sind (z.B. andere Nachnamen). Ziel dieses Tests ist es, anhand von Reaktionszeiten herauszufinden, wenn eine Person versucht, bestimmte Daten zu verschleiern bzw. zu verheimlichen. Dies geschieht auf Basis der Vermutung, dass Reaktionszeiten für die Ihnen präsentierten selbstbezogenen Details langsamer ausfallen, als im Falle anderer Namen oder Daten. Hauptanliegen dieser Studie ist es, zu zeigen, ob dies besser mit der Aufforderung zu einer möglichst schnellen Reaktion oder zu einer möglichst genauen Reaktion funktioniert.\n\nFür weitere Informationen wenden Sie sich bitte an den Versuchsleiter (oder schreiben Sie eine E-mail an Gaspar Lukacs).'
+    info = 'Danke für die Teilnahme. Wenn Sie möchten, können Sie gehen, aber bitte seien Sie leise dabei.\n\nKurze Information über den Test:\n\nIn dieser Studie versuchen wir, Ihre wirklichen selbstbezogenen Details (z.B. Ihren tatsächlichen Nachnamen) von solchen zu unterscheiden, die Ihnen nicht zugehörig sind (z.B. andere Nachnamen). Ziel dieses Tests ist es, anhand von Reaktionszeiten herauszufinden, wenn eine Person versucht, bestimmte Daten zu verschleiern bzw. zu verheimlichen. Dies geschieht auf Basis der Vermutung, dass Reaktionszeiten für die Ihnen präsentierten selbstbezogenen Details langsamer ausfallen, als im Falle anderer Namen oder Daten. Hauptanliegen dieser Studie ist es, zu zeigen, ob dies besser mit der Aufforderung zu einer möglichst schnellen Reaktion oder zu einer möglichst genauen Reaktion funktioniert.\n\nFür weitere Informationen wenden Sie sich bitte an den Versuchsleiter (oder schreiben Sie eine E-mail an till.lubczyk@univie.ac.at).'
 
     data_out.write(dems + "/" +
       "/".join( [ str(nmbr) for nmbr in
@@ -114,7 +114,7 @@ def task_instructions( whichtext = ''):
     if whichtext == 'firstblock':
         return keys_info + '\n\nEs werden drei kurze Übungsrunden stattfinden. In der ersten Runde müssen Sie Ausdrücke kategorisieren, die mit Vertrautheit zu tun haben. '  + inducer_info
     elif block_num > 1:
-        return  keys_info + inducer_info + '\n\nDie restlichen Items sind Nachnamen und Daten.' + main_item_info + '\n\nHinweis: achten Sie nur auf die Begriffe die mit der' + key_assignment + ' Taste kategorisiert werden müssen (' + ', '.join(the_targets + list(targetref_words)).upper() + ') und kategorisieren Sie alles andere mit der ' + other_key + ' Taste.'
+        return  keys_info + inducer_info + '\n\nDie restlichen Items sind Nachnamen und Daten.' + main_item_info + '\n\nHinweis: achten Sie nur auf die Begriffe die mit der ' + key_assignment + ' Taste kategorisiert werden müssen (' + ', '.join(the_targets + list(targetref_words)).upper() + ') und kategorisieren Sie alles andere mit der ' + other_key + ' Taste.'
     else:
         return  keys_info + inducer_info
 
@@ -137,7 +137,7 @@ def set_block_info():
 
     block_info.append('Sie haben die zweite Übungsrunde geschafft. Nun folgt die dritte und letzte Übungsrunde. In dieser dritten Übungsrunde wird die Antwortzeit verkürzt sein. Eine bestimmte Anzahl an falschen Antworten ist aber erlaubt. Die Wörter (Angaben) "unvertraut", "vertraut" werden nicht mehr angezeigt, die Aufgabe bleibt jedoch dieselbe. Es werden nun sowohl die Ausdrück aus der ersten Übungsrunde als auch die Kategorie ' + blcks_base[0][0]['categ']+ ' aus der zweiten Übungsrunde gezeigt.\n\n ' + move_on)
 
-    block_info.append("Gut gemacht. Nun beginnt der eigentliche Test. " + instruction_pair[crrnt_instr] + " Die Aufgabe bleibt dieselbe. Es wird zwei Blöcke, getrennt durch eine Pause, geben. Im ersten Block wird die Kategorie " +
+    block_info.append("Gut gemacht. Nun beginnt der eigentliche Test. \n\n" + instruction_pair[crrnt_instr] + "\n\nDie Aufgabe bleibt dieselbe. Es wird zwei Blöcke, getrennt durch eine Pause, geben. Im ersten Block wird die Kategorie " +
       blcks_base[0][0]['categ'] +  " getestet, also werden Ihnen nur die damit verbundenen Items präsentiert. " +
       target_reminder[0] + "\n" + move_on)
 
@@ -146,7 +146,7 @@ def set_block_info():
       blcks_base[1][0]['categ'] +
       " getestet. " +
       target_reminder[1] +
-      "Abgesehen davon bleibt die Aufgabe dieselbe.\n" + instruction_reminder[crrnt_instr] + "\n" + move_on)
+      "Abgesehen davon bleibt die Aufgabe dieselbe.\n\n" + instruction_reminder[crrnt_instr] + "\n" + move_on)
 
 
 
@@ -240,13 +240,19 @@ def start_input():
             gender = 1
         else:
             gender = 3
+        if condition in [1,2]:
+            group = 'speed'
+        elif condition in [3,4]:
+            group = 'acc'
+        else:
+            group = 'control'
         true_birthdaymonth = input_box.data[3]
         true_birthdayday = input_box.data[4]
         true_birthday = ' '.join([true_birthdaymonth, str(true_birthdayday)])
-        dems = 'dems/gender/age/hand/reps1/rep2/rep3/drtn' + '\t' + str(gender) + '/' + str(age)  + '/' + input_box.data[6]
+        dems = 'dems/gender/age/hand/group/reps1/rep2/rep3/drtn' + '\t' + str(gender) + '/' + str(age)  + '/' + input_box.data[6] + '/'  + str(group)
 
         categories = ['Datum', 'Nachname']
-        true_probes = {categories[0]: true_birthday.lower(),  categories[1]: true_surname.lower() }
+        true_probes = {categories[0]: true_birthday.upper(),  categories[1]: true_surname.upper() }
         confirm_dlg()
     else:
         quit()
@@ -254,7 +260,7 @@ def start_input():
 def confirm_dlg():
     global start_date
     confirm_input = Dlg(title=u'Confirmation', labelButtonOK=u'JA', labelButtonCancel=u'Nein')
-    input_feed = u'Bitte bestätigen Sie, dass Ihr Vor- und Nachname richtig geschrieben wird und Ihr Geburtstag (Format "Monat TT") korrekt ist:\n\n ' + true_forename.upper() + ' ' + true_surname.upper() + '\n\n' + true_birthday.upper()
+    input_feed = u'Bitte bestätigen Sie, dass Ihr Vor- und Nachname richtig geschrieben wird und Ihr Geburtstag (Format "Monat TT") korrekt ist:\n\n' + true_forename.upper() + ' ' + true_surname.upper() + '\n\n' + true_birthday.upper()
     confirm_input.addText(text='')
     confirm_input.addText(text=input_feed)
     confirm_input.addText(text='')
