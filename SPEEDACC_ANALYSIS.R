@@ -1,94 +1,129 @@
-library(neatStats)
-setwd(path_neat('data'))
-filenames = list.files(pattern = "^speed_acc_.*txt$")
+# libs ----
 
-for (file_name in enum(filenames)) {
-#  file_name = c(1, "speed_acc_cit4_02_20210312122705.txt")
-  cat(file_name, fill = TRUE)
+library("neatStats")
+
+# COLLECT DATA ----
+
+setwd(path_neat(""))
+
+file_names = list.files(pattern = "^speed_acc_.*txt$")
+
+for (fname in enum(file_names)) {
+  # fname = c(1, "speed_acc_cit1_10_20210319115636.txt")
+  cat(fname, ' ')
   subj_data = read.table(
-  file_name[2],
-  sep = "\t",
-  header = TRUE,
-  fill = TRUE,
-  quote = "\"",
-  stringsAsFactors = FALSE
-    )
+    fname[2],
+    sep = "\t",
+    header = TRUE,
+    fill = TRUE,
+    quote = "\"",
+    stringsAsFactors = FALSE
+  )
 
-  # dems_row = subj_data[startsWith(as.character(subj_data$subject_id), 'dems'), ]
-  # dems_heads = strsplit(dems_row[[2]], "/")[[1]]
-  # dems_dat = strsplit(dems_row[[3]], "/")[[1]]
-  # dems = do.call(rbind.data.frame, list(dems_dat))
-  # colnames(dems) = dems_heads
-  
+  dems_row = subj_data[startsWith(as.character(subj_data$subject_id), 'dems'), ]
+  dems_heads = strsplit(dems_row[[1]], "/")[[1]][-1]
+  dems_dat = strsplit(dems_row[[2]], "/")[[1]]
+  dems = do.call(rbind.data.frame, list(dems_dat))
+  colnames(dems) = dems_heads
+
   subj_itms_base = subj_data[subj_data$phase == 'main', ]
-  
-  #if (nrow(subj_itms_base) != 2*162) {
+
+  subj_itms_base$stim_type[grepl('^irrelevant', subj_itms_base$stim_type)] = "irrelevant"
+
+  if (nrow(subj_itms_base) != 2*162) {
     # just double-check
     # print("number of rows:")
     # print(nrow(subj_itms_base))
-  #  stop("trial num incorrect: ", nrow(subj_itms_base))
-  #}
-  
+    stop("trial num incorrect: ", nrow(subj_itms_base))
+  }
+
   subj_itms_base$valid_trial = ifelse(
     subj_itms_base$incorrect == 0 &
       subj_itms_base$too_slow == 0,
     1,
     0
   )
-  
-  rts = aggr_neat(
-    subj_itms_base,
-    rt_start,
-    group_by = c('stim_type'),
-    method = mean,
-    prefix = 'rt',
-    filt = (rt_start > 150 & incorrect == 0)
-  )
-  
-  ers = aggr_neat(
-    subj_itms_base,
-    valid_trial,
-    group_by = c('stim_type'),
-    method = mean,
-    prefix = 'er'
 
+  subj_acc_rates = neatStats::aggr_neat(
+    dat = subj_itms_base,
+    values = valid_trial,
+    method = mean,
+    group_by = c("stim_type"),
+    prefix = "acc_rate"
   )
-  
-  er_overall = aggr_neat(subj_itms_base,
-                         valid_trial,
-                         method = mean,
-                         group_by = c('stim_type'))$aggr_value
-  
 
-  
+  subj_rt_mean = neatStats::aggr_neat(
+    dat = subj_itms_base,
+    values = rt_start,
+    method = mean,
+    group_by = c("stim_type"),
+    filt = (valid_trial == 1),
+    prefix = "rt_mean"
+  )
+
+  subj_itms_base$press_duration = as.numeric(subj_itms_base$press_duration)
+  subj_dur_mean = neatStats::aggr_neat(
+    dat = subj_itms_base,
+    values = press_duration,
+    method = mean,
+    group_by = c("stim_type"),
+    filt = (valid_trial == 1),
+    prefix = "dur_mean"
+  )
+
+  overall_acc = neatStats::aggr_neat(
+    dat = subj_itms_base,
+    values = valid_trial,
+    method = mean,
+    group_by = c("stim_type"),
+    prefix = "overall_acc"
+  )
+
   rbind_loop(
-    subjects_merged,
-    subject_id = subj_itms_base$subject_id[1],
-    condition = subj_itms_base$condition[1],
-    er_overall = er_overall,
-    rts,
-    ers
+    main_cit_merg,
+    subject_id = subj_data$subject_id[1],
+    dems,
+    subj_acc_rates,
+    subj_rt_mean,
+    subj_dur_mean,
+    overall_acc
   )
 }
 
-# subjects_merged$rt_mean_diffs_0 = subjects_merged$rt_mean_probe_0 - subjects_merged$rt_mean_irrelevant_0
-# subjects_merged$rt_mean_diffs_1 = subjects_merged$rt_mean_probe_1 - subjects_merged$rt_mean_irrelevant_1
-# 
-# subjects_merged$acc_rate_diffs_0 = subjects_merged$acc_rate_probe_0 - subjects_merged$acc_rate_irrelevant_0
-# subjects_merged$acc_rate_diffs_1 = subjects_merged$acc_rate_probe_1 - subjects_merged$acc_rate_irrelevant_1
-# 
-# subjects_merged$dur_mean_diffs_0 = subjects_merged$dur_mean_probe_0 - subjects_merged$dur_mean_irrelevant_0
-# subjects_merged$dur_mean_diffs_1 = subjects_merged$dur_mean_probe_1 - subjects_merged$dur_mean_irrelevant_1
+main_cit_prep = main_cit_merg
 
-  
-# plus statistcs etc.
+# add probe-irrelevant differences
 
-#data_final = excl_neat(subjects_merged, THREE INTERQUARTILE RANGE)
+for (colname in names(main_cit_prep)) {
+  if (class(main_cit_prep[[colname]]) ==  "numeric" &
+      grepl("_probe", colname, fixed = TRUE)) {
+    dat_probe = main_cit_prep[[colname]]
+    dat_irrel = main_cit_prep[[sub("_probe", "_irrelevant", colname)]]
+    newcol = sub("_probe", "_diff", colname)
+    main_cit_prep[[newcol]] = dat_probe - dat_irrel
+  }
+}
 
-#datafinal$pi_rt_mean etc.
+main_cit_data = main_cit_prep
 
+for (grp in unique(main_cit_data$filler_type)) {
+  cat(grp, fill = TRUE)
+  grp_dat = main_cit_data[main_cit_data$filler_type == grp, ]
+  main_cit_data = excl_neat(
+    main_cit_data,
+    (
+      overall_acc_main >= lofence(grp_dat$overall_acc_main) &
+        overall_acc_target >= lofence(grp_dat$overall_acc_target) &
+        overall_acc_filler >= lofence(grp_dat$overall_acc_filler)
+    ) | main_cit_data$filler_type != grp
+  )
+}
 
-#anova_neat() through conditions
+full_data = main_cit_data
 
-#t_neat()
+# demographics
+
+neatStats::dems_neat(full_data, percent = F, group_by = 'condition')
+
+anova_neat(full_data, values = 'rt_mean_diff', between_vars = 'condition')
 
