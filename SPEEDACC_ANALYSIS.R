@@ -82,6 +82,7 @@ for (fname in enum(file_names)) {
   rbind_loop(
     main_cit_merg,
     subject_id = subj_data$subject_id[1],
+    condition = subj_data$condition[1],
     dems,
     subj_acc_rates,
     subj_rt_mean,
