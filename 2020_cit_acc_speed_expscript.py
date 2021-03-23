@@ -274,9 +274,9 @@ noneword = 'Keine'
 def prune():
     global items_to_filt
     birthdays = birthdays_items
-    birthdays = [bd.lower() for bd in birthdays]
+    birthdays = [bd.upper() for bd in birthdays]
     birthdays.sort()
-    surnames = [sn.lower() for sn in surnms]
+    surnames = [sn.upper() for sn in surnms]
     surnames.sort()
     item_base_temp = {}
     for cat_ind, categ in enumerate(categories):
@@ -363,7 +363,7 @@ def item_selection():
             wait(0.3)
             clearEvents()
     for categ in categories:
-        w_selected[categ] = [ ws.lower() for ws in w_selected[categ] ]
+        w_selected[categ] = [ ws.upper() for ws in w_selected[categ] ]
 
 def trm(raw_inp):
     return [w for w in raw_inp.replace(',', ' ').split(' ') if w != ''][:2]
