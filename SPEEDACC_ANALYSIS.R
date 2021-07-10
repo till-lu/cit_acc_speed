@@ -158,6 +158,13 @@ for (grp in unique(main_cit_data$group)) {
 
 full_data = main_cit_data
 
+full_data$error_rate_irrelevant = (1 - full_data$overall_acc_irrelevant) * 100
+full_data$error_rate_target = (1 - full_data$overall_acc_target) * 100
+full_data$error_rate_targetref = (1 - full_data$overall_acc_targetref) * 100
+full_data$error_rate_nontargref = (1 - full_data$overall_acc_nontargref) * 100
+full_data$error_rate_probe = (1 - full_data$overall_acc_probe) * 100
+full_data$error_rate_diff = (full_data$error_rate_probe) -  (full_data$error_rate_irrelevant) 
+
 # full_data = excl_neat(full_data, subject_id != "187_20210503100937")
 # full_data = excl_neat(full_data, subject_id != "188_20210503101011")
 # full_data = excl_neat(full_data, subject_id != "16_20210408094158")
@@ -183,7 +190,7 @@ anova_neat(
 
 anova_neat(
   full_data,
-  values = 'overall_acc_diff',
+  values = 'error_rate_diff',
   between_vars = 'group',
   plot_means = T,  norm_plots = T,
   norm_tests = 'all',
@@ -192,19 +199,18 @@ anova_neat(
 )
 
 
-table_neat(
+write_clip(table_neat(
   list(
-    aggr_neat(full_data, overall_acc_irrelevant, round_to = 3),
-    aggr_neat(full_data, overall_acc_nontargref, round_to = 3),
-    aggr_neat(full_data, overall_acc_probe, round_to = 3),
-    aggr_neat(full_data, overall_acc_target, round_to = 3),
-    aggr_neat(full_data, overall_acc_targetref, round_to = 3),
-    aggr_neat(full_data, overall_acc_diff, round_to = 3)
+    aggr_neat(full_data, error_rate_irrelevant, round_to = 3),
+    aggr_neat(full_data, error_rate_nontargref, round_to = 3),
+    aggr_neat(full_data, error_rate_probe, round_to = 3),
+    aggr_neat(full_data, error_rate_target, round_to = 3),
+    aggr_neat(full_data, error_rate_targetref, round_to = 3),
+    aggr_neat(full_data, error_rate_diff, round_to = 3)
 
   ),
-  group_by = 'group',
-  to_clipboard = TRUE
-)
+  group_by = 'group'
+))
 
 table_neat(
   list(
@@ -246,11 +252,11 @@ anova_neat(
 anova_neat(
   full_data,
   values = c(
-    'overall_acc_target',
-    'overall_acc_targetref',
-    'overall_acc_irrelevant',
-    'overall_acc_nontargref',
-    'overall_acc_probe'
+    'error_rate_target',
+    'error_rate_targetref',
+    'error_rate_irrelevant',
+    'error_rate_nontargref',
+    'error_rate_probe'
   ),
   
   between_vars = 'group',
@@ -288,27 +294,27 @@ control_data = excl_neat(full_data, group == 'control')
 t_neat(speed_data$rt_mean_diff,
        control_data$rt_mean_diff,
        bf_added = T,
-       nonparametric = T)
+       nonparametric = F)
 t_neat(acc_data$rt_mean_diff,
        control_data$rt_mean_diff,
        bf_added = T)
 t_neat(speed_data$rt_mean_diff,
        acc_data$rt_mean_diff,
-       nonparametric = TRUE,
+       nonparametric = F,
        bf_added = T)
 
 
-t_neat(speed_data$overall_acc_diff,
-       control_data$overall_acc_diff,
+t_neat(speed_data$error_rate_diff,
+       control_data$error_rate_diff,
        bf_added = T,
-       nonparametric = T)
-t_neat(acc_data$overall_acc_diff,
-       control_data$overall_acc_diff,
+       nonparametric = F)
+t_neat(acc_data$error_rate_diff,
+       control_data$error_rate_diff,
        bf_added = T,
-       nonparametric = T)
-t_neat(speed_data$overall_acc_diff,
-       acc_data$overall_acc_diff,
-       nonparametric = T,
+       nonparametric = F)
+t_neat(speed_data$error_rate_diff,
+       acc_data$error_rate_diff,
+       nonparametric = F,
        bf_added = T)
 
 
@@ -322,7 +328,7 @@ plot_neat(full_data,
           line_colors = c("#FDE725FF", "#440154FF"))
 
 plot_neat(full_data, 
-          values = 'overall_acc_diff',
+          values = 'error_rate_diff',
           between_vars = 'group',
           y_title = 'Mean accuracy difference (Probe - Irrelevant) in %')
 
@@ -342,9 +348,9 @@ sim_auc(speed_data$rt_mean_diff)
 sim_auc(acc_data$rt_mean_diff)
 sim_auc(control_data$rt_mean_diff)
 
-sim_auc(speed_data$overall_acc_diff)
-sim_auc(acc_data$overall_acc_diff)
-sim_auc(control_data$overall_acc_diff)
+sim_auc(speed_data$error_rate_diff)
+sim_auc(acc_data$error_rate_diff)
+sim_auc(control_data$error_rate_diff)
 
 
 write_clip(neatStats::dems_neat(full_data, percent = F, group_by = 'group')
@@ -374,8 +380,8 @@ anova_neat(
 anova_neat(
   full_data,
   values = c(
-    'overall_acc_irrelevant',
-    'overall_acc_probe'
+    'error_rate_irrelevant',
+    'error_rate_probe'
   ),
   
   between_vars = 'group',
@@ -392,8 +398,39 @@ anova_neat(
 )
 
 
-peek_neat(full_data, 'rt_mean_irrelevant', group_by = 'group')
-peek_neat(full_data, 'rt_mean_targetref', group_by = 'group')
-peek_neat(full_data, 'rt_mean_nontargref', group_by = 'group')
-peek_neat(full_data, 'rt_mean_target', group_by = 'group')
-peek_neat(full_data, 'rt_mean_probe', group_by = 'group')
+write_clip(table_neat(
+  list(
+    aggr_neat(full_data, rt_mean_irrelevant),
+    aggr_neat(full_data, rt_mean_nontargref),
+    aggr_neat(full_data, rt_mean_probe),
+    aggr_neat(full_data, rt_mean_target),
+    aggr_neat(full_data, rt_mean_targetref),
+    aggr_neat(full_data, rt_mean_diff)
+    
+  ),
+  group_by = 'group'
+))
+
+
+
+
+
+
+write_clip(table_neat(
+  list(
+    aggr_neat(full_data, error_rate_irrelevant, round_to = 3),
+    aggr_neat(full_data, error_rate_nontargref, round_to = 3),
+    aggr_neat(full_data, error_rate_probe, round_to = 3),
+    aggr_neat(full_data, error_rate_target, round_to = 3),
+    aggr_neat(full_data, error_rate_targetref, round_to = 3),
+    aggr_neat(full_data, error_rate_diff, round_to = 3)
+    
+  ),
+  group_by = 'group'
+))
+
+# peek_neat(full_data, 'rt_mean_irrelevant', group_by = 'group')
+# peek_neat(full_data, 'rt_mean_targetref', group_by = 'group')
+# peek_neat(full_data, 'rt_mean_nontargref', group_by = 'group')
+# peek_neat(full_data, 'rt_mean_target', group_by = 'group')
+# peek_neat(full_data, 'rt_mean_probe', group_by = 'group')
