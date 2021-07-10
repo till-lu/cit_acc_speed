@@ -58,7 +58,7 @@ for (fname in enum(file_names)) {
   
 
 #subj_itms_base = excl_neat(subj_itms_base, trial_number > 112 & block_number == 5) 
-#subj_itms_base = excl_neat(subj_itms_base, trial_number > 50 & block_number == 4)
+#subj_itms_base = excl_neat(subj_itms_base, trial_number < 50 & block_number == 4)
   
   
   
