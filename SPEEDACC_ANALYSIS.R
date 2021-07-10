@@ -90,7 +90,7 @@ for (fname in enum(file_names)) {
     values = rt_start,
     method = mean,
     group_by = c("stim_type"),
-    filt = (valid_trial == 1),
+    filt = (valid_trial == 1 & rt_start >= 150),
     prefix = "rt_mean"
   )
   
@@ -310,6 +310,8 @@ t_neat(speed_data$overall_acc_diff,
        acc_data$overall_acc_diff,
        nonparametric = T,
        bf_added = T)
+
+
 
 
 plot_neat(full_data, 
