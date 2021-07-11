@@ -35,17 +35,17 @@ for (fname in enum(file_names)) {
     quote = "\"",
     stringsAsFactors = FALSE
   )
-  
+
   dems_row = subj_data[startsWith(as.character(subj_data$subject_id), 'dems'), ]
   dems_heads = strsplit(dems_row[[1]], "/")[[1]][-1]
   dems_dat = strsplit(dems_row[[2]], "/")[[1]]
   dems = do.call(rbind.data.frame, list(dems_dat))
   colnames(dems) = dems_heads
-  
+
   subj_itms_base = subj_data[subj_data$phase == 'main', ]
 
   subj_itms_base$stim_type[grepl('^irrelevant', subj_itms_base$stim_type)] = "irrelevant"
-  
+
 
   subj_itms_base$exclusion <- "fillers"
   subj_itms_base$exclusion[subj_itms_base$stim_type == 'probe' | subj_itms_base$stim_type == 'irrelevant'] <- "mainitems"
@@ -57,20 +57,20 @@ for (fname in enum(file_names)) {
     # print(nrow(subj_itms_base))
     stop("trial num incorrect: ", nrow(subj_itms_base))
   }
-  
 
-#subj_itms_base = excl_neat(subj_itms_base, trial_number > 112 & block_number == 5) 
+
+#subj_itms_base = excl_neat(subj_itms_base, trial_number > 112 & block_number == 5)
 #subj_itms_base = excl_neat(subj_itms_base, trial_number < 50 & block_number == 4)
-  
-  
-  
+
+
+
   subj_itms_base$valid_trial = ifelse(
     subj_itms_base$incorrect == 0 &
       subj_itms_base$too_slow == 0,
     1,
     0
   )
-  
+
   subj_acc_rates = neatStats::aggr_neat(
     dat = subj_itms_base,
     values = valid_trial,
@@ -78,7 +78,7 @@ for (fname in enum(file_names)) {
     group_by = c("stim_type"),
     prefix = "acc_rate"
   )
-  
+
   subj_acc_rates_exclusion = neatStats::aggr_neat(
     dat = subj_itms_base,
     values = valid_trial,
@@ -86,7 +86,7 @@ for (fname in enum(file_names)) {
     group_by = c("exclusion"),
     prefix = "excl_rate"
   )
-  
+
   subj_rt_mean = neatStats::aggr_neat(
     dat = subj_itms_base,
     values = rt_start,
@@ -95,17 +95,17 @@ for (fname in enum(file_names)) {
     filt = (valid_trial == 1 & rt_start >= 150),
     prefix = "rt_mean"
   )
-  
+
   subj_itms_base$press_duration = as.numeric(subj_itms_base$press_duration)
   subj_dur_mean = neatStats::aggr_neat(
     dat = subj_itms_base,
     values = press_duration,
     method = mean,
     group_by = c("stim_type"),
-    filt = (valid_trial == 1),
+    filt = (valid_trial == 1 & rt_start >= 150),
     prefix = "dur_mean"
   )
-  
+
   overall_acc = neatStats::aggr_neat(
     dat = subj_itms_base,
     values = valid_trial,
@@ -113,7 +113,7 @@ for (fname in enum(file_names)) {
     group_by = c("stim_type"),
     prefix = "overall_acc"
   )
-  
+
   rbind_loop(
     main_cit_merg,
     subject_id = subj_data$subject_id[1],
@@ -153,7 +153,7 @@ for (grp in unique(main_cit_data$group)) {
     (
       excl_rate_targets >= lofence(grp_dat$excl_rate_targets) &
         excl_rate_fillers >= lofence(grp_dat$excl_rate_fillers) &
-        excl_rate_mainitems >= lofence(grp_dat$excl_rate_mainitems) 
+        excl_rate_mainitems >= lofence(grp_dat$excl_rate_mainitems)
     ) | main_cit_data$group != grp
   )
 }
@@ -165,7 +165,7 @@ full_data$error_rate_target = (1 - full_data$overall_acc_target) * 100
 full_data$error_rate_targetref = (1 - full_data$overall_acc_targetref) * 100
 full_data$error_rate_nontargref = (1 - full_data$overall_acc_nontargref) * 100
 full_data$error_rate_probe = (1 - full_data$overall_acc_probe) * 100
-full_data$error_rate_diff = (full_data$error_rate_probe) -  (full_data$error_rate_irrelevant) 
+full_data$error_rate_diff = (full_data$error_rate_probe) -  (full_data$error_rate_irrelevant)
 
 # full_data = excl_neat(full_data, subject_id != "187_20210503100937")
 # full_data = excl_neat(full_data, subject_id != "188_20210503101011")
@@ -222,7 +222,7 @@ table_neat(
     aggr_neat(full_data, rt_mean_target),
     aggr_neat(full_data, rt_mean_targetref),
     aggr_neat(full_data, rt_mean_diff)
-    
+
   ),
   group_by = 'group'
 )
@@ -260,7 +260,7 @@ anova_neat(
     'error_rate_nontargref',
     'error_rate_probe'
   ),
-  
+
   between_vars = 'group',
   plot_means = TRUE,
   line_colors = c("#fb3155",
@@ -283,7 +283,7 @@ write_clip(table_neat(
     aggr_neat(full_data, rt_mean_target),
     aggr_neat(full_data, rt_mean_targetref),
     aggr_neat(full_data, rt_mean_diff)
-    
+
   ),
   group_by = 'group'
 ))
@@ -322,14 +322,14 @@ t_neat(acc_data$error_rate_diff,
 
 
 
-plot_neat(full_data, 
+plot_neat(full_data,
           values = 'rt_mean_diff',
           between_vars = 'group',
           y_title = 'Mean reaction time difference (Probe - Irrelevant) in ms',
           bar_colors = c("#FDE725FF", "#440154FF"),
           line_colors = c("#FDE725FF", "#440154FF"))
 
-plot_neat(full_data, 
+plot_neat(full_data,
           values = 'error_rate_diff',
           between_vars = 'group',
           y_title = 'Mean accuracy difference (Probe - Irrelevant) in %')
@@ -365,7 +365,7 @@ anova_neat(
     'rt_mean_irrelevant'#,
 #    'rt_mean_probe'
   ),
-  
+
   between_vars = 'group',
   plot_means = TRUE,
   # line_colors = c("#ecb90e",
@@ -387,7 +387,7 @@ anova_neat(
     'error_rate_irrelevant'#,
     # 'error_rate_probe'
   ),
-  
+
   between_vars = 'group',
   plot_means = TRUE,
   # line_colors = c("#ecb90e",
@@ -410,7 +410,7 @@ write_clip(table_neat(
     aggr_neat(full_data, rt_mean_target),
     aggr_neat(full_data, rt_mean_targetref),
     aggr_neat(full_data, rt_mean_diff)
-    
+
   ),
   group_by = 'group'
 ))
@@ -424,36 +424,83 @@ write_clip(table_neat(
     aggr_neat(full_data, error_rate_target, round_to = 1),
     aggr_neat(full_data, error_rate_targetref, round_to = 1),
     aggr_neat(full_data, error_rate_diff, round_to = 1)
-    
+
   ),
   group_by = 'group'
 ))
 
 
+##
+
+plot_neat(
+  full_data,
+  values = c(
+    'rt_mean_irrelevant',
+    'rt_mean_probe',
+    'error_rate_irrelevant',
+    'error_rate_probe'
+  ),
+  within_ids = list(
+    measure = c('rt_mean', 'error_rate'),
+    item_type = c('probe', 'irrelevant')
+  ),
+  between_vars = 'group',
+  value_names = c(
+    'rt_mean_irrelevant' = 'Irrelevant',
+    'rt_mean_probe' = 'Probe',
+    acc = 'accuracy'
+  ), panels = 'measure',
+  factor_names = c(item_type = '',
+                   group = 'Instruction Group')
+)
+
+
 figure2a = plot_neat(
   full_data,
-  values = c('rt_mean_irrelevant', 'rt_mean_probe'), 
+  values = c('rt_mean_probe', 'rt_mean_irrelevant'),
   between_vars = 'group',
-  value_names = c('rt_mean_irrelevant' = 'Irrelevant', 
-                  'rt_mean_probe'= 'Probe'),
-  factor_names = c(within_factor = 'RT mean (ms)',
-                   group = 'Instruction Group'))
+  value_names = c(
+    'rt_mean_irrelevant' = 'Irrelevant',
+    'rt_mean_probe' = 'Probe',
+    acc = 'accuracy'
+  ),
+  y_title = 'RT (ms)',
+  factor_names = c(
+    within_factor = '',
+    item_type = '',
+    group = 'Instruction group'
+  )
+)
 
 figure2b = plot_neat(
   full_data,
-  values = c('error_rate_irrelevant', 'error_rate_probe'),
+  values = c('error_rate_probe', 'error_rate_irrelevant'),
   between_vars = 'group',
-  value_names = c('error_rate_irrelevant' = 'Irrelevant', 
-                  'error_rate_probe'= 'Probe'),
-  factor_names = c(within_factor = 'ER mean (%)',
-                   group = 'Instruction Group'))
+  value_names = c(
+    'error_rate_irrelevant' = 'Irrelevant',
+    'error_rate_probe' = 'Probe',
+    acc = 'accuracy'
+  ),
+  y_title = 'ER (%)',
+  factor_names = c(
+    within_factor = '',
+    item_type = '',
+    group = 'Instruction group'
+  )
+)
+library("ggplot2")
 
-ggarrange(figure2a, figure2b, 
-          labels = c('A - RTs (in ms)', 'B - ERs (in %)'), 
-          hjust = -0.1,
-          vjust = 0.4,
-          legend = 'top',
-          common.legend = T)
+
+ggpubr::ggarrange(
+  figure2a + ggtitle('A: Response time') +
+    theme(plot.title = element_text(hjust = 0.5)),
+  figure2b + ggtitle('B: Error rate') +
+    theme(plot.title = element_text(hjust = 0.5)),
+  # labels = c('A - RTs (in ms)', 'B - ERs (in %)'),
+  legend = 'top',
+  common.legend = T
+)
+
 
 
 # peek_neat(full_data, 'rt_mean_irrelevant', group_by = 'group')
