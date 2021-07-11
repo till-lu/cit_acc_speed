@@ -1,8 +1,10 @@
 # libs ----
 
-library("neatStats")
+
 library("clipr")
 library("bayestestR")
+
+library("neatStats")
 
 
 
@@ -170,8 +172,8 @@ full_data$error_rate_diff = (full_data$error_rate_probe) -  (full_data$error_rat
 # full_data = excl_neat(full_data, subject_id != "16_20210408094158")
 
 #last
-# full_data = excl_neat(full_data, subject_id != "135_20210422124314")
-# full_data = excl_neat(full_data, subject_id != "124_20210422084023")
+# full_data = excl_neat(full_data, subject_id != "136_20210422131342")
+# full_data = excl_neat(full_data, subject_id != "101_20210416124145")
 
 
 # demographics
@@ -307,14 +309,14 @@ t_neat(speed_data$rt_mean_diff,
 t_neat(speed_data$error_rate_diff,
        control_data$error_rate_diff,
        bf_added = T,
-       nonparametric = F)
+       nonparametric = T)
 t_neat(acc_data$error_rate_diff,
        control_data$error_rate_diff,
        bf_added = T,
-       nonparametric = F)
-t_neat(speed_data$error_rate_diff,
-       acc_data$error_rate_diff,
-       nonparametric = F,
+       nonparametric = T)
+t_neat(acc_data$error_rate_diff,
+       speed_data$error_rate_diff,
+       nonparametric = T,
        bf_added = T)
 
 
@@ -361,7 +363,7 @@ anova_neat(
   full_data,
   values = c(
     'rt_mean_irrelevant'#,
-    #'rt_mean_probe'
+#    'rt_mean_probe'
   ),
   
   between_vars = 'group',
@@ -373,15 +375,17 @@ anova_neat(
   #                 "#0b0a2d"),
   norm_plots = T,
   norm_tests = 'all',
-  bf_added = F,
+  bf_added = T,
   var_tests = TRUE
 )
+
+
 
 anova_neat(
   full_data,
   values = c(
-    'error_rate_irrelevant',
-    'error_rate_probe'
+    'error_rate_irrelevant'#,
+    # 'error_rate_probe'
   ),
   
   between_vars = 'group',
@@ -412,22 +416,45 @@ write_clip(table_neat(
 ))
 
 
-
-
-
-
 write_clip(table_neat(
   list(
-    aggr_neat(full_data, error_rate_irrelevant, round_to = 3),
-    aggr_neat(full_data, error_rate_nontargref, round_to = 3),
-    aggr_neat(full_data, error_rate_probe, round_to = 3),
-    aggr_neat(full_data, error_rate_target, round_to = 3),
-    aggr_neat(full_data, error_rate_targetref, round_to = 3),
-    aggr_neat(full_data, error_rate_diff, round_to = 3)
+    aggr_neat(full_data, error_rate_irrelevant, round_to = 1),
+    aggr_neat(full_data, error_rate_nontargref, round_to = 1),
+    aggr_neat(full_data, error_rate_probe, round_to = 1),
+    aggr_neat(full_data, error_rate_target, round_to = 1),
+    aggr_neat(full_data, error_rate_targetref, round_to = 1),
+    aggr_neat(full_data, error_rate_diff, round_to = 1)
     
   ),
   group_by = 'group'
 ))
+
+
+figure2a = plot_neat(
+  full_data,
+  values = c('rt_mean_irrelevant', 'rt_mean_probe'), 
+  between_vars = 'group',
+  value_names = c('rt_mean_irrelevant' = 'Irrelevant', 
+                  'rt_mean_probe'= 'Probe'),
+  factor_names = c(within_factor = 'RT mean (ms)',
+                   group = 'Instruction Group'))
+
+figure2b = plot_neat(
+  full_data,
+  values = c('error_rate_irrelevant', 'error_rate_probe'),
+  between_vars = 'group',
+  value_names = c('error_rate_irrelevant' = 'Irrelevant', 
+                  'error_rate_probe'= 'Probe'),
+  factor_names = c(within_factor = 'ER mean (%)',
+                   group = 'Instruction Group'))
+
+ggarrange(figure2a, figure2b, 
+          labels = c('A - RTs (in ms)', 'B - ERs (in %)'), 
+          hjust = -0.1,
+          vjust = 0.4,
+          legend = 'top',
+          common.legend = T)
+
 
 # peek_neat(full_data, 'rt_mean_irrelevant', group_by = 'group')
 # peek_neat(full_data, 'rt_mean_targetref', group_by = 'group')
